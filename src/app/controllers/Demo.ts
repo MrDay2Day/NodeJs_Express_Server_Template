@@ -14,6 +14,14 @@ import { sql_pool } from "../../config/mysql/config";
 // To use MongoDB Database simply import Schema for collection from the 'models/database/mongodb/**'
 import Demo from "../models/database/mongo/schemas/Demo";
 
+// To use socket connection
+import { getIO } from "../../utils/socket";
+/**
+ *  Examples use of SocketIO websocket
+ *   const io = getIO();
+    io.to(SOCKET_ID | SOCKET_ROOM).emit("update-user-info", parsedData);
+ */
+
 class DemoController {
   static async auth_demo(req: Request, res: Response, next: NextFunction) {
     try {
