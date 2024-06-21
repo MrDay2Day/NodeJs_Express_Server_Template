@@ -1,0 +1,72 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "description": "This is a simple Express REST server with with SocketIo distributed through Redis/KeyDB, and Database integration MySQL, PostGresSQL and MongoDB, and Server-side Events.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node code/src/server.js",
+    "start:server": "pm2 start code/src/server.js --watch",
+    "start:dev_1": "npx tsc && supervisor -e js,json,env,html,css code/index.js",
+    "dev_": "tsc-watch --onSuccess \"nodemon code/src/server.js\"",
+    "tsc": "tsc-watch",
+    "node": "nodemon code/src/server.js",
+    "dev": "npm-run-all --parallel tsc node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "Express-Server"
+  },
+  "keywords": [
+    "express",
+    "server",
+    "socketio",
+    "redis",
+    "mongodb",
+    "mysql",
+    "posgres",
+    "server_events"
+  ],
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.473.0",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "@types/nodemailer": "^6.4.15",
+    "@types/pg": "^8.11.6",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
+    "mongoose": "^7.1.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.10.1",
+    "nodemailer": "^6.9.7",
+    "nodemon": "^2.0.22",
+    "npm-run-all": "^4.1.5",
+    "pg": "^8.12.0",
+    "redis": "^4.6.14",
+    "request-stats": "^3.0.0",
+    "socket.io": "^4.6.1",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.0.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/compression": "^1.7.5",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.14.7",
+    "@types/uuid": "^9.0.8"
+  },
+  "author": "Day2DayJa",
+  "license": "MIT"
+}

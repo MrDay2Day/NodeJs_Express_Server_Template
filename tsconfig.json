@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "outDir": "code/src",
+    "target": "ES2020",
+    // "watch": true,
+    "lib": ["dom", "esnext"],
+    "module": "NodeNext",
+    "strict": true,
+    "typeRoots": ["secure/global.d.ts", "./node_modules/@types"]
+  }
+}
