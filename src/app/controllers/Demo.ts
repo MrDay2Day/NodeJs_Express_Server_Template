@@ -1,5 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 
+// To access database functionality
+
+// To Use PostGres Database
+// Check NodeJS pg documentation
+import { pg_pool } from "../../config/postgres/config";
+
+// To use MySQL Database
+// Check NodeJS pg documentation
+// Check mysql2/promise documentation
+import { sql_pool } from "../../config/mysql/config";
+
+// To use MongoDB Database simply import Schema for collection from the 'models/database/mongodb/**'
+import Demo from "../models/database/mongo/schemas/Demo";
+
 class DemoController {
   static async auth_demo(req: Request, res: Response, next: NextFunction) {
     try {
