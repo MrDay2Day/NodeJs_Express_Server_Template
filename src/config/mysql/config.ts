@@ -8,4 +8,6 @@ const connection_data = {
   password: process.env.MYSQL_PASS,
 };
 
-export const sql_pool = sql_promise.createConnection(connection_data);
+export const sql_pool = process.env.MYSQL_ACTIVE
+  ? sql_promise.createConnection(connection_data)
+  : null;

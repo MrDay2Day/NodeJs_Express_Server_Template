@@ -15,6 +15,7 @@ declare global {
       SALT: string;
       DB_TYPE: "mysql" | "postgres" | "mongo";
       //MongoDB
+      MONGO_ACTIVE: string;
       MONGO_URL: string;
       MONGO_CLUSTER: string;
       MONGO_USER: string;
@@ -22,12 +23,14 @@ declare global {
       MONGO_DEFAULT_DATABASE: string;
       ADMIN_DEFAULT_DATABASE: string;
       // PostGres SQL
+      PG_ACTIVE: string;
       PG_USER: string;
       PG_HOST: string;
       PG_DB: string;
       PS_PASS: string;
       PG_PORT: any | number;
       // MySQL
+      MYSQL_ACTIVE: string;
       MYSQL_USER: string;
       MYSQL_HOST: string;
       MYSQL_DB: string;

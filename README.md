@@ -1,3 +1,3 @@
 Copy and paste ".env.template" to ".env"
 
-Select your database choice
+You are able to use multiple databases in this project PostGres, MySQL and MongoDB.

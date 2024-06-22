@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
 
-import { Document } from "mongoose";
+import { Document } from "mongoose"; // Mongodb Document type
 
 const MainDb = MONGO_DEFAULT_DATABASE;
 const Schema = mongoose.Schema;
@@ -12,9 +12,9 @@ export enum UserType {
   Visitor = "Visitor",
 }
 
-export type DemoSchemaTypes = Document & {
+export type DemoSchemaType = Document & {
   name: string;
-  age: number;
+  age?: number;
   dob: Date;
   userType: UserType;
 };
@@ -30,7 +30,6 @@ const DemoOptions = {
   },
   age: {
     type: Number,
-    required: true,
   },
   dob: {
     type: Date,
@@ -42,10 +41,16 @@ const DemoOptions = {
   },
 };
 
-const demoSchema = new Schema<DemoSchemaTypes>(DemoOptions, {
+const demoSchema = new Schema<DemoSchemaType>(DemoOptions, {
   timestamps: true,
   shardKey: { _id: 1 },
 });
 
-const Demo = MainDb.model<DemoSchemaTypes>("Demo", demoSchema);
+demoSchema.method("updateAge", async function (new_age: number) {
+  this.age = new_age;
+  await this.save();
+  return this;
+});
+
+const Demo = MainDb.model<DemoSchemaType>("Demo", demoSchema);
 export default Demo;
