@@ -3,10 +3,17 @@ import mongoose from "mongoose";
 import { MONGOOSE_OPTIONS } from "./mongo/config";
 import { serverDataInfo } from "../utils/serverDataInfo";
 import { pg_pool } from "./postgres/config";
-import { sql_pool } from "./mysql/config";
+import { mysql_connection_data_with_database, sql_pool } from "./mysql/config";
 import { resolve } from "path";
+import {
+  checkAndCreateMySQLDatabase,
+  createMySQLTables,
+} from "../app/models/database/mysql/trigger";
+import { Connection } from "mysql2/promise";
 
 console.log("INITIALIZING DATABASE CONNECTION...");
+
+let my_sql_access: Connection | undefined;
 
 function ConnectMongoDB() {
   return new Promise(async function (resolve, reject) {
@@ -43,11 +50,19 @@ function ConnectPostGres() {
 function ConnectMySQL() {
   return new Promise(async function (resolve, reject) {
     if (sql_pool) {
-      const data = await (await sql_pool).connect();
+      await checkAndCreateMySQLDatabase();
+      my_sql_access = await sql_pool(mysql_connection_data_with_database);
+
+      // console.log({ my_sql_access });
+
+      const res = await my_sql_access.query("show tables like ?", ["Demo"]);
+      console.log(res);
+      await createMySQLTables(my_sql_access);
+      const data = await my_sql_access.connect();
       console.log("MYSQL DATABASE CONNECTED!");
       resolve(data);
     } else {
-      reject({});
+      reject({ msg: "No sql pool." });
     }
   });
 }
@@ -86,5 +101,7 @@ class DBConfiguration {
     }
   }
 }
+
+export { my_sql_access };
 
 export default DBConfiguration;

@@ -2,22 +2,12 @@ import mongoose from "mongoose";
 import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
 
 import { Document } from "mongoose"; // Mongodb Document type
+import { DemoTypes } from "../../types/Demo_Types";
 
 const MainDb = MONGO_DEFAULT_DATABASE;
 const Schema = mongoose.Schema;
 
-export enum UserType {
-  Admin = "Admin",
-  User = "User",
-  Visitor = "Visitor",
-}
-
-export type DemoSchemaType = Document & {
-  name: string;
-  age?: number;
-  dob: Date;
-  userType: UserType;
-};
+export type DemoSchemaType = Document & DemoTypes;
 
 const DemoOptions = {
   _id: {

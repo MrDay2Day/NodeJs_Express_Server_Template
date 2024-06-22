@@ -1,5 +1,6 @@
 import { Document } from "mongoose";
-import { DemoSchemaType, UserType } from "../database/mongo/schemas/Demo";
+import { DemoSchemaType } from "../database/mongo/schemas/Demo";
+import { UserType } from "../database/types/Demo_Types";
 
 // Object-Oriented approach with MongoDB Documents.
 
@@ -32,6 +33,7 @@ class DemoClass extends Document {
 }
 
 /**
+
 import Demo from "../database/mongo/schemas/Demo";
 import { DemoClass } from "./path/to/DemoClass";
 

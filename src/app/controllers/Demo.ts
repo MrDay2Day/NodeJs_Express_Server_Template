@@ -9,7 +9,7 @@ import { pg_pool } from "../../config/postgres/config";
 // To use MySQL Database
 // Check NodeJS pg documentation
 // Check mysql2/promise documentation
-import { sql_pool } from "../../config/mysql/config";
+import { my_sql_access } from "../../config/db_config";
 
 // To use MongoDB Database simply import Schema for collection from the 'models/database/mongodb/**'
 import Demo from "../models/database/mongo/schemas/Demo";
