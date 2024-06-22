@@ -4,7 +4,7 @@ import { UserType } from "../database/types/Demo_Types";
 
 // Object-Oriented approach with MongoDB Documents.
 
-class DemoClass extends Document {
+export class DemoClass extends Document {
   name: string;
   age?: number | undefined;
   dob: Date;
@@ -52,5 +52,3 @@ async function example() {
 }
 
  */
-
-export { DemoClass };

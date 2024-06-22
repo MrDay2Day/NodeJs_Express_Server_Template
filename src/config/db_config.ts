@@ -14,6 +14,7 @@ import { Connection } from "mysql2/promise";
 console.log("INITIALIZING DATABASE CONNECTION...");
 
 let my_sql_access: Connection | undefined;
+let postgres_access: Connection | undefined;
 
 function ConnectMongoDB() {
   return new Promise(async function (resolve, reject) {
@@ -53,12 +54,9 @@ function ConnectMySQL() {
       await checkAndCreateMySQLDatabase();
       my_sql_access = await sql_pool(mysql_connection_data_with_database);
 
-      // console.log({ my_sql_access });
-
-      const res = await my_sql_access.query("show tables like ?", ["Demo"]);
-      console.log(res);
       await createMySQLTables(my_sql_access);
       const data = await my_sql_access.connect();
+
       console.log("MYSQL DATABASE CONNECTED!");
       resolve(data);
     } else {
@@ -102,6 +100,6 @@ class DBConfiguration {
   }
 }
 
-export { my_sql_access };
+export { my_sql_access, postgres_access };
 
 export default DBConfiguration;
