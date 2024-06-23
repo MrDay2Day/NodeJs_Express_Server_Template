@@ -190,7 +190,7 @@ class DemoController {
         [demo_user.full_name, age, demo_user.dob, demo_user.userType]
       );
 
-      const user = data.rows[0];
+      const user = data.rows[0] as DemoTypes;
 
       return res.status(200).json({ data: user, valid: true });
     } catch (error: any) {

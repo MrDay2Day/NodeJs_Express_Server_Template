@@ -25,10 +25,10 @@ export async function checkAndCreateMySQLDatabase(): Promise<boolean> {
       if (databases.length === 0) {
         // Create the database if it does not exist
         await connection.query(`CREATE DATABASE ${databaseName}`);
-        console.log(`Database "${databaseName}" created successfully.`);
+        console.log(`MySQL Database "${databaseName}" created successfully.`);
         return true;
       } else {
-        console.log(`Database "${databaseName}" already exists.`);
+        console.log(`MySQL Database "${databaseName}" already exists.`);
       }
     } else {
       throw { msg: "Server Not initiated." };
@@ -67,9 +67,11 @@ export async function createMySQLTables(connection: Connection): Promise<{
             // Execute the SQL statement
             await connection.execute(table_data.script);
             created++;
-            console.log(`Table ${table_data.table_name} created successfully.`);
+            console.log(
+              `MySQL Table ${table_data.table_name} created successfully.`
+            );
           } else {
-            console.log(`Table ${table_data.table_name} already exists.`);
+            console.log(`MySQL Table ${table_data.table_name} already exists.`);
           }
         } else {
           throw false;

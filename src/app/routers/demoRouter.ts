@@ -38,22 +38,20 @@ demoRouter.post(
   DemoController.handle_file
 );
 
-//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
 /**
  * Handling URL queries
         Example: http://localhost:3030/server/demo/query?a=2&b=4&c=9
-
  */
 demoRouter.get("/query", DemoController.handle_queries);
 /**
  * Handling URL params
         Example: http://localhost:3030/server/demo/params/e/f/g
-
  */
 demoRouter.get("/params/:x/:y/:z", DemoController.handle_params);
 
-///////////////////////////////
+//////////////////////////////////////////////////////////////
 demoRouter.get("/create-mysql", DemoController.create_user_mysql);
 demoRouter.get("/create-mongo", DemoController.create_user_mongo);
 demoRouter.get("/create-postgres", DemoController.create_user_postgres);

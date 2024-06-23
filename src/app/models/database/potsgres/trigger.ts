@@ -43,14 +43,16 @@ export async function createPGTables(): Promise<{
       try {
         const res = await query_pg(
           `SELECT 1 FROM information_schema.tables WHERE table_name=$1`,
-          [table_data.table_name]
+          [table_data.table_name.toLowerCase()]
         );
 
         if (res.rowCount === 0) {
           await query_pg(table_data.script, []);
-          console.log(`Table ${table_data.table_name} created successfully.`);
+          console.log(
+            `PG Table ${table_data.table_name} created successfully.`
+          );
         } else {
-          console.log(`Table ${table_data.table_name} already exists.`);
+          console.log(`PG Table ${table_data.table_name} already exists.`);
         }
       } catch (error) {
         console.log("createPGTables", { error });
