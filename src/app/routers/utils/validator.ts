@@ -69,4 +69,4 @@ const password_Check = body("password")
 export const signUpCheck = [emailCheckExists, password_Check, phoneCheck];
 export const socialSignUpCheck = [emailCheckExists, password_Check];
 export const pass_validator = validator;
-export const loginCheck = [emailCheck];
+export const email_validator = [emailCheck];

@@ -29,3 +29,9 @@ export const mysql_connection_data_with_database: MySQLConnectionType = {
 export const sql_pool = async function (configuration: MySQLConnectionType) {
   return await sql_promise.createConnection(configuration);
 };
+
+export const connect_sql = async function () {
+  return await sql_promise.createConnection(
+    mysql_connection_data_with_database
+  );
+};

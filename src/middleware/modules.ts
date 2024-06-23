@@ -1,5 +1,5 @@
 // Express Server
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 const app = express();
 
 // Cookie parser

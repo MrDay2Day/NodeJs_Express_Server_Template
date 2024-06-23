@@ -7,7 +7,7 @@ console.log("**********************\nSTART\n**********************");
 import { app } from "./middleware/modules";
 
 // Detail Error console logging
-// process.on("warning", (e) => console.warn(e.stack));
+process.on("warning", (e) => console.warn(e.stack));
 
 // Main Routes import
 import mainRouter from "./app/app";
@@ -24,10 +24,10 @@ console.log("INITIALIZATION COMPLETE!");
  */
 
 // Attaching imported WebSocket to Server
-console.log("INITIALIZING SOCKET CONNECTION...");
+
 import http from "http";
 import { init, getIO } from "./utils/socket";
-import SocketIOFunctions from "./app/engine/socket";
+import SocketIOFunctions from "./app/engines/socket";
 import DBConfiguration from "./config/db_config";
 console.log("INITIALIZATION COMPLETE!");
 

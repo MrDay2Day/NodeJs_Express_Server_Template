@@ -2,14 +2,17 @@ import http from "http";
 import mongoose from "mongoose";
 import { MONGOOSE_OPTIONS } from "./mongo/config";
 import { serverDataInfo } from "../utils/serverDataInfo";
-import { pg_pool } from "./postgres/config";
+import { pg_connection_data, pg_pool } from "./postgres/config";
 import { mysql_connection_data_with_database, sql_pool } from "./mysql/config";
-import { resolve } from "path";
 import {
   checkAndCreateMySQLDatabase,
   createMySQLTables,
 } from "../app/models/database/mysql/trigger";
 import { Connection } from "mysql2/promise";
+import {
+  checkAndCreatePGDatabase,
+  createPGTables,
+} from "../app/models/database/potsgres/trigger";
 
 console.log("INITIALIZING DATABASE CONNECTION...");
 
@@ -33,35 +36,31 @@ function ConnectMongoDB() {
 
 function ConnectPostGres() {
   return new Promise(async function (resolve, reject) {
-    if (pg_pool) {
-      pg_pool
-        .connect()
-        .then((data) => {
-          console.log("POSTGRES DATABASE CONNECTED!");
-          resolve(data);
-        })
-        .catch((error) => {
-          console.log({ error });
-          reject(error);
-        });
+    try {
+      await pg_pool(pg_connection_data);
+      await checkAndCreatePGDatabase();
+      await createPGTables();
+      console.log("POSTGRES DATABASE CONNECTED!");
+
+      resolve(true);
+    } catch (error) {
+      console.log({ error });
+      reject(error);
     }
   });
 }
 
 function ConnectMySQL() {
   return new Promise(async function (resolve, reject) {
-    if (sql_pool) {
-      await checkAndCreateMySQLDatabase();
-      my_sql_access = await sql_pool(mysql_connection_data_with_database);
+    await checkAndCreateMySQLDatabase();
+    my_sql_access = await sql_pool(mysql_connection_data_with_database);
 
-      await createMySQLTables(my_sql_access);
-      const data = await my_sql_access.connect();
+    await createMySQLTables(my_sql_access);
+    const data = await my_sql_access.connect();
+    my_sql_access.end();
 
-      console.log("MYSQL DATABASE CONNECTED!");
-      resolve(data);
-    } else {
-      reject({ msg: "No sql pool." });
-    }
+    console.log("MYSQL DATABASE CONNECTED!");
+    resolve(data);
   });
 }
 
@@ -69,7 +68,7 @@ function start_server(
   server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
 ) {
   server.listen(Number(process.env.PORT), async () => {
-    console.log(`SERVER RUNNING ON PORT --> ${process.env.PORT}`);
+    console.log(`WEBSERVER RUNNING ON PORT --> ${process.env.PORT}`);
   });
   serverDataInfo(server);
 }
@@ -99,7 +98,5 @@ class DBConfiguration {
     }
   }
 }
-
-export { my_sql_access, postgres_access };
 
 export default DBConfiguration;

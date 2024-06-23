@@ -1,4 +1,5 @@
 // This files allows us to share our SocketIO connection across all files but importing this file.
+console.log("INITIALIZING SOCKET CONNECTION...");
 
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
