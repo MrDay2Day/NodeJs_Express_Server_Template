@@ -26,7 +26,7 @@ console.log("INITIALIZATION COMPLETE!");
 // Attaching imported WebSocket to Server
 
 import http from "http";
-import { init, getIO } from "./utils/socket";
+import { init } from "./utils/socket";
 import SocketIOFunctions from "./app/engines/socket";
 import DBConfiguration from "./config/db_config";
 console.log("INITIALIZATION COMPLETE!");
