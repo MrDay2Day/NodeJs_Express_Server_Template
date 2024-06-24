@@ -1,4 +1,4 @@
-// Creates a Tables with function and trigger that updates automatically the updatedat column with the Date and Time the updated changes were made to the specified row(s) and a createdat column that is auto created when u row is added.
+// Creates a Tables with function and trigger that updates automatically the "updatedat" column with the Date and Time the updated changes were made to the specified row(s) and a "createdat" column that is auto created when u row is added.
 
 function createDemoTablePG() {
   const table_name = "Demo";

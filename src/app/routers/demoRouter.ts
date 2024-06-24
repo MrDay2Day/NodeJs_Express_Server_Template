@@ -2,7 +2,7 @@ import express from "express";
 import DemoController from "../controllers/DemoController";
 
 import { valid_req, check_number } from "./utils/route_auth";
-import { multer_multi_file } from "../../middleware/multer";
+import { multer_single_image } from "../../middleware/multer";
 import { email_validator } from "./utils/validator";
 
 const demoRouter = express.Router();
@@ -28,15 +28,12 @@ demoRouter.post(
 
 /**
  * This route has
-        - Custom validation middleware => valid_req
-        - Multer middleware so this route can accept form request which allows it to receive files
+        - Multer middleware so this route can accept multipart/form-data request which allows it to receive files
  */
-demoRouter.post(
-  "/file",
-  valid_req,
-  multer_multi_file,
-  DemoController.handle_file
-);
+// Using middleware on the route before the controller
+demoRouter.post("/file-1", multer_single_image, DemoController.handle_file_1);
+// Using middleware in the controller itself and not the route
+demoRouter.post("/file-2", DemoController.handle_file_2);
 
 //////////////////////////////////////////////////////////////
 

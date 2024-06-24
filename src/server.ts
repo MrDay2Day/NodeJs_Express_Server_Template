@@ -1,53 +1,25 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-console.log("**********************\nSTART\n**********************");
+process.on("APP STACK WARNING", (e) => console.warn(e.stack));
+console.log(
+  `
+\n**************************************\n
+        START ${process.env.APP_NAME} SERVER\n
+**************************************\n`
+);
 
-// Middleware
-import { app } from "./middleware/modules";
-
-// Detail Error console logging
-process.on("warning", (e) => console.warn(e.stack));
-
-// Main Routes import
-import mainRouter from "./app/app";
-
-// Connecting main routes
 console.log("INITIALIZING MIDDLEWARE AND ENDPOINTS...");
+import { app } from "./middleware/modules";
+import mainRouter from "./app/app";
 app.use("/", mainRouter);
 console.log("INITIALIZATION COMPLETE!");
 
-/**
- *
- * Server Initialization
- *
- */
-
-// Attaching imported WebSocket to Server
-
 import http from "http";
-import { init } from "./utils/socket";
-import SocketIOFunctions from "./app/engines/socket";
 import DBConfiguration from "./config/db_config";
 console.log("INITIALIZATION COMPLETE!");
 
 console.log("INITIALIZING SERVER...");
 const server = http.createServer(app);
-const io = init(server); // WebSocket
-
-/**
- *
- * Server Functionality
- *
- */
-
-io.on("connection", (socket: any) => {
-  console.log(
-    `Socket connection made to ${socket.id} at ${socket.handshake.time}`
-  );
-  SocketIOFunctions.listenerFunc(socket, socket.request);
-});
-
 console.log("WEBSERVER INITIALIZED!");
-
 DBConfiguration.initiate(server);

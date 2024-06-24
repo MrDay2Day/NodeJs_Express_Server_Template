@@ -3,6 +3,8 @@ console.log("INITIALIZING SOCKET CONNECTION...");
 
 import { createClient } from "redis";
 import { createAdapter } from "@socket.io/redis-adapter";
+import { Server } from "socket.io";
+import http from "http";
 
 const pubClient =
   process.env.USE_REDIS === "y"
@@ -13,16 +15,16 @@ const pubClient =
 
 const subClient = process.env.USE_REDIS === "y" ? pubClient?.duplicate() : null;
 
-export let io: any;
+export let io: Server;
 
 let totalDataSent = 0;
-import { Server } from "socket.io";
-export const init = (httpServer: any) => {
+export const init = (httpServer: http.Server) => {
   io = new Server(httpServer, {
     // secure: true,
+    cookie: true,
     pingTimeout: 30000,
     pingInterval: 30000,
-    path: "/minerva_socket/",
+    path: `/${process.env.APP_SOCKET_NAME}/`,
   });
 
   if (process.env.USE_REDIS === "y") {
@@ -51,13 +53,13 @@ export const init = (httpServer: any) => {
     subClient?.on("connect", () => {
       console.log("REDIS SUBSCRIBING CLIENT CONNECTED!!!");
     });
-    subClient?.on("error", (redisErr: any) => {
+    subClient?.on("error", (redisErr: any | unknown) => {
       console.log({ redisErr });
     });
     pubClient?.on("connect", () => {
       console.log("REDIS PUBLISHING CLIENT CONNECTED!!!");
     });
-    pubClient?.on("error", (redisErr: any) => {
+    pubClient?.on("error", (redisErr: any | unknown) => {
       console.log({ redisErr });
     });
     // console.log({ io });

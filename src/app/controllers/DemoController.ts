@@ -27,11 +27,15 @@ import Demo from "../models/database/mongo/schemas/Demo";
 import { getIO } from "../../utils/socket";
 /**
  *  Examples use of SocketIO websocket
-      ...
-      const io = getIO();
-      io.to(<SOCKET_ID | SOCKET_ROOM>).emit("<listener>", data);
-      ...
-      */
+...
+const io = getIO();
+io.to(<SOCKET_ID | SOCKET_ROOM>).emit("<listener>", data);
+...
+*/
+
+// Handling multipart/form-data inside the controller
+import { multer_single_image } from "../../middleware/multer";
+import multer from "multer";
 
 function generate_user() {
   return {
@@ -95,22 +99,50 @@ class DemoController {
     }
   }
 
-  // Demo controller to handle file upload using multer
-  static async handle_file(req: Request, res: Response, next: NextFunction) {
+  // Demo controller to handle file upload using multer before the controller
+  static async handle_file_1(req: Request, res: Response, next: NextFunction) {
     try {
-      const { files } = req;
+      const { files, file } = req;
       const { demo, name } = req.body as { demo: string; name: string };
 
-      console.log({ files, demo });
+      console.log({ files, file, demo });
 
       return res.status(200).json({ valid: true, route: "handle_file" });
     } catch (error: any) {
       return res.status(400).json({
         valid: false,
-        code: "DEMO000003",
+        code: "DEMO000003A",
         msg: error.msg || "Something went wrong.",
       });
     }
+  }
+
+  // Here we use multer to handle multipart/form-data in the controller for a more custom experience, here we can deliver a custom error message or handle errors in another manor.
+  static async handle_file_2(req: Request, res: Response, next: NextFunction) {
+    multer_single_image(req, res, function (err) {
+      try {
+        if (err instanceof multer.MulterError) {
+          console.log("Multer Error", { err });
+          throw { err };
+        } else if (err) {
+          console.log("Unknown Error", { err });
+          throw { err };
+          // An unknown error occurred when uploading.
+        }
+        const { files, file } = req;
+        const { demo, name } = req.body as { demo: string; name: string };
+
+        console.log({ files, file, demo });
+
+        return res.status(200).json({ valid: true, route: "handle_file" });
+      } catch (error: any) {
+        return res.status(400).json({
+          valid: false,
+          code: "DEMO000003B",
+          msg: error.msg || "Something went wrong.",
+        });
+      }
+    });
   }
 
   // Demo handling url queries
@@ -167,7 +199,7 @@ class DemoController {
       console.log({ error });
       return res.status(400).json({
         valid: false,
-        code: "DEMO000006",
+        code: "DEMO000007",
         msg: error.msg || "Something went wrong.",
       });
     }
@@ -197,7 +229,7 @@ class DemoController {
       console.log({ error });
       return res.status(400).json({
         valid: false,
-        code: "DEMO000006",
+        code: "DEMO000008",
         msg: error.msg || "Something went wrong.",
       });
     }
@@ -229,7 +261,7 @@ class DemoController {
       console.log({ error });
       return res.status(400).json({
         valid: false,
-        code: "DEMO000006",
+        code: "DEMO000009",
         msg: error.msg || "Something went wrong.",
       });
     }

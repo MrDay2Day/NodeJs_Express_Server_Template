@@ -4,16 +4,21 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: string;
+      APP_NAME: string;
       PORT: string;
+      LOCAL_URL: string;
+      JWT_TOKEN_EXPIRE: string;
+      SALT: string;
+      DB_TYPE: "mysql" | "postgres" | "mongo";
+      FILE_UP_DOWN: string;
+      APP_SOCKET_NAME: string;
+      APP_MAIN_SOCKET_ROOM: string;
+      // Redis Server
       USE_REDIS: string;
       REDIS_URL: string;
       REDIS_HOST: string;
       REDIS_PORT: string;
       REDIS_PASS: string;
-      LOCAL_URL: string;
-      JWT_TOKEN_EXPIRE: string;
-      SALT: string;
-      DB_TYPE: "mysql" | "postgres" | "mongo";
       //MongoDB
       MONGO_ACTIVE: string;
       MONGO_URL: string;
@@ -44,6 +49,13 @@ declare global {
       AWS_SECRET_ACCESS_KEY: string;
       AWS_SES_SEND_LIMIT_PER_SEC: string;
       AWS_SES_QUEUE_WAIT_TIME: string;
+      // Backblaze S3 Storage
+      BACKBLAZE_PUBLIC_KEY_ID: string;
+      BACKBLAZE_PUBLIC_KEY: string;
+      BACKBLAZE_PRIVATE_KEY_ID: string;
+      BACKBLAZE_PRIVATE_KEY_NAME: string;
+      BACKBLAZE_PRIVATE_BUCKET_NAME: string;
+      BACKBLAZE_PRIVATE_KEY: string;
     }
   }
 }
