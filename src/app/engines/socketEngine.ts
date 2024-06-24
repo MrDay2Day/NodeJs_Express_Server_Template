@@ -1,5 +1,4 @@
 import { getIO } from "../../utils/socket";
-import cookie from "cookie";
 import { Socket } from "socket.io";
 import http from "http";
 
@@ -18,7 +17,7 @@ export default class SocketEngine {
 
     socket.on("ping", async (data, callback) => {
       try {
-        await validate_socket(socket.id);
+        await validate_socket(socket);
         const roomArray = Array.from(socket.rooms, (value) => value);
         console.log("Received data:", {
           data,
@@ -60,9 +59,9 @@ export default class SocketEngine {
   }
 }
 
-async function validate_socket(socket_id: string) {
-  console.log({ socket_id });
-  // Validate SocketId
+async function validate_socket(socket: Socket) {
+  console.log({ socket });
+  const socket_id = socket.id;
 
   if (!socket_id) {
     throw new Error("Not Authenticated.");
