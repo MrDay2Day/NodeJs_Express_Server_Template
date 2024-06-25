@@ -1,7 +1,7 @@
 {
   "name": "express-server",
   "version": "1.0.0",
-  "description": "This is a simple Express REST server with with SocketIo distributed through Redis/KeyDB, and Database integration MySQL, PostGresSQL and MongoDB, and Server-side Events.",
+  "description": "A Boilerplate NodeJS Express Server Template written in Typescript built for scale!",
   "main": "server.js",
   "scripts": {
     "start": "node code/src/server.js",
