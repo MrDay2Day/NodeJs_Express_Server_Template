@@ -99,16 +99,19 @@ These are features & technologies that may or may not be integrated in the futur
 
 - ✅ MySQL Integration
 - ✅ PostGrSQL Integration
-- ✅ MongoDB Integration
+- ✅ MongoDB Integration _(Recommended DB for Scale)_
+- ✅ Socket.IO Integration
 - ✅ Redis (Pub/Sub) Integration
 - ✅ Multer Integration
-- ✅ Socket.IO Integration
+- ✅ Backblaze Integration
+- ✅ AWS Integration
 - ⚠️ tRCP
 - 💭 GraphQL
+- ➡️ ServerSide Events
 - ✏️ Paddle Integration
 - ✏️ Stripe Integration
 - ✏️ Paypal Integration
 - ✏️ Stripe Integration
-- 💭 HandlebarJS (For specified routes)
-- 💭 Google Auth (With Recommendations and Procedures)
-- 💭 Facebook Auth (With Recommendations and Procedures)
+- 💭 HandlebarJS _(For specified routes)_
+- 💭 Google Auth _(With Recommendations and Procedures)_
+- 💭 Facebook Auth _(With Recommendations and Procedures)_
