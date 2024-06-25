@@ -95,23 +95,27 @@ These are features & technologies that may or may not be integrated in the futur
 ⚠️ Issue  
 ❌ Cancelled
 
+**Implementation Style 👇🏿**  
+💡 Custom Implementation _(All Custom implementations are accompanied with documentation and examples)_
+🕯️ Standard Implementation
+
 **Current List**
 
-- ✅ MySQL Integration
-- ✅ PostGrSQL Integration
-- ✅ MongoDB Integration _(Recommended DB for Scale)_
-- ✅ Socket.IO Integration
-- ✅ Redis (Pub/Sub) Integration
-- ✅ Multer Integration
-- ✅ Backblaze Integration
-- ✅ AWS Integration
+- ✅ MySQL💡
+- ✅ PostGrSQL💡
+- ✅ MongoDB💡 _(Recommended DB for Scale)_
+- ✅ Socket.IO💡
+- ✅ Redis (Pub/Sub)🕯️
+- ✅ Multer🕯️
+- ✅ Backblaze💡
+- ✅ AWS💡
 - ⚠️ tRCP
 - 💭 GraphQL
 - ➡️ ServerSide Events
-- ✏️ Paddle Integration
-- ✏️ Stripe Integration
-- ✏️ Paypal Integration
-- ✏️ Stripe Integration
+- ✏️ Paddle
+- ✏️ Stripe
+- ✏️ Paypal
+- ✏️ Stripe
 - 💭 HandlebarJS _(For specified routes)_
 - 💭 Google Auth _(With Recommendations and Procedures)_
 - 💭 Facebook Auth _(With Recommendations and Procedures)_
