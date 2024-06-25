@@ -10,6 +10,7 @@ import imagemin from "imagemin";
 import imageminJpegtran from "imagemin-jpegtran";
 // @ts-ignore
 import imageminPngquant from "imagemin-pngquant";
+import imageminJpegRecompress from "imagemin-jpeg-recompress";
 
 import sizeOf from "buffer-image-size";
 
@@ -19,12 +20,12 @@ import { NextFunction, Request, Response } from "express";
 const fileTypes = ["profileImage", "document", "image"];
 const imagesOnly = ["profileImage", "image"];
 
-async function WriteFileToDB({}) {
-  return {};
+async function WriteFileToDB(x: any) {
+  return x;
 }
 
-async function DeleteFileToDB({}) {
-  return {};
+async function DeleteFileToDB(x: any) {
+  return x;
 }
 
 const b2_private = {
@@ -87,6 +88,10 @@ class Worker {
         .then(async (buffer: any) => {
           const file = await imagemin.buffer(buffer, {
             plugins: [
+              imageminJpegRecompress({
+                accurate: true,
+                method: "ssim",
+              }),
               imageminJpegtran({
                 progressive: true,
               }),
@@ -112,10 +117,11 @@ class Worker {
     image: any,
     location: any,
     file: any,
-    fileName: string
+    fileName: string,
+    extension: string
   ) => {
     try {
-      const filePath = `${location}/${fileName}.${file.mimetype.split("/")[1]}`;
+      const filePath = `${location}/${fileName}.${extension}`;
       var Sha1 = crypto.createHash("sha1").update(image).digest("hex");
       // console.log("UPLOAD", {
       //   uploadUrl,
@@ -156,10 +162,10 @@ class Worker {
         bucketId: data.allowed.bucketId,
       });
 
-      console.log({ data, uploadRequest: uploadRequest.data });
-
       var uploadUrl = uploadRequest.data.uploadUrl;
       var uploadAuthorizationToken = uploadRequest.data.authorizationToken;
+      var extension =
+        file.originalname.split(".")[file.originalname.split(".").length - 1];
       var fileName = `${uuidv4()}-${Date.now()}`;
       var source = file.buffer;
 
@@ -172,7 +178,7 @@ class Worker {
       }
 
       if (imagesOnly.includes(type)) {
-        resizedImage = await this.resizeImage(source, 800);
+        resizedImage = await this.resizeImage(source, 2000);
       }
 
       let uploadRegularData = {};
@@ -184,7 +190,8 @@ class Worker {
         imagesOnly.includes(type) ? resizedImage : source,
         location,
         file,
-        fileName
+        fileName,
+        extension
       );
 
       if (imagesOnly.includes(type)) {
@@ -195,7 +202,8 @@ class Worker {
           thumbnail,
           `${type}/thumbnail`,
           file,
-          fileName
+          fileName,
+          extension
         );
       }
 
@@ -325,47 +333,33 @@ class FileManagement {
   };
 }
 
-export async function fetchFile(
-  req: Request & { fileInfo: any },
-  res: Response,
-  next: NextFunction
-) {
+export async function fetchFile({
+  contentType,
+  fileName,
+  res,
+}: {
+  contentType: string;
+  fileName: string;
+  res: Response;
+}) {
   try {
-    const { fileName, type } = req.params;
-    console.log({ fileName, type });
-
-    if (!!process.env.FILE_UP_DOWN) {
+    if (!process.env.FILE_UP_DOWN) {
       throw { msg: "File fetch disabled.", code: "BB0000001" };
     }
-    const { fileInfo } = req;
 
-    var fileToSend: any;
-    // console.log(fileInfo);
-    if (!fileInfo) {
-      throw { msg: "File not found", code: "BB0000002" };
-    } else if (type == "thumbnail") {
-      fileToSend = await b2.downloadFileByName({
-        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
-        fileName: fileInfo.uploadThumbnailData.fileName,
-        // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
-        responseType: "arraybuffer",
-      });
-      res.setHeader("Content-Type", fileInfo.uploadThumbnailData.contentType);
-    } else if (type == "full") {
-      fileToSend = await b2.downloadFileByName({
-        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
-        fileName: fileInfo.uploadRegularData.fileName,
-        // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
-        responseType: "arraybuffer",
-      });
-      res.setHeader("Content-Type", fileInfo.uploadRegularData.contentType);
-    }
+    var fileToSend = await b2.downloadFileByName({
+      bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
+      fileName,
+      // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
+      responseType: "arraybuffer",
+    });
 
-    res.send(fileToSend.data);
+    res
+      .status(200)
+      .setHeader("Content-Type", contentType)
+      .send(fileToSend.data);
   } catch (err: any | unknown) {
-    console.log({ err });
-    res.statusCode = 400;
-    res.json({
+    res.status(400).json({
       valid: false,
       err: {
         msg: err.msg || "Something went wrong, please try again.",

@@ -36,6 +36,9 @@ io.to(<SOCKET_ID | SOCKET_ROOM>).emit("<listener>", data);
 // Handling multipart/form-data inside the controller
 import { multer_single_image } from "../../middleware/multer";
 import multer from "multer";
+import FileManagement, { fetchFile } from "../apis/FileManagement";
+// Sample Upload Data
+import { demo_image_file, excel_file } from "./file_info";
 
 function generate_user() {
   return {
@@ -104,10 +107,27 @@ class DemoController {
     try {
       const { files, file } = req;
       const { demo, name } = req.body as { demo: string; name: string };
+      const { type } = req.params;
 
       console.log({ files, file, demo });
 
-      return res.status(200).json({ valid: true, route: "handle_file" });
+      const file_data = await FileManagement.upload(
+        type, // "document" | "image" | (Optional: "profileImage")
+        "1234567890abcdefg",
+        file
+      );
+
+      // Uncomment to be able to return the file uploaded.
+      // --
+      // return await fetchFile({
+      //   fileName: file_data.uploadRegularData.fileName,
+      //   contentType: file_data.uploadRegularData.contentType,
+      //   res,
+      // });
+
+      return res
+        .status(200)
+        .json({ valid: true, route: "handle_file", file_data, body: req.body });
     } catch (error: any) {
       return res.status(400).json({
         valid: false,
@@ -143,6 +163,27 @@ class DemoController {
         });
       }
     });
+  }
+
+  // Demo of fetching a file securely and serving to frontend from Backblaze S3 whether it an image or file.
+  static async fetch_file(req: Request, res: Response, next: NextFunction) {
+    try {
+      // This is the information that needed to fetch the file
+
+      // Please take note of the required fields from "demo_file_info" which is the dat your get from uploading a file.
+      // NB: For images ONLY you get "uploadThumbnailData" AND "uploadRegularData" while every other file type ONLY has "uploadRegularData"
+      return await fetchFile({
+        fileName: demo_image_file.uploadRegularData.fileName,
+        contentType: demo_image_file.uploadRegularData.contentType,
+        res,
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        valid: false,
+        code: "DEMO000003B",
+        msg: error.msg || "Something went wrong.",
+      });
+    }
   }
 
   // Demo handling url queries

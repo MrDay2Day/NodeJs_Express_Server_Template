@@ -24,15 +24,17 @@ export default class SocketEngine {
       console.log({ event }, socket.data);
     });
 
+    // Examples of general socket listeners
     socket.on("ping", async (data, callback) => {
       try {
+        // This function should be used to validate socket connection that it is associated with a valid user.
         await validate_socket(socket);
-        const roomArray = Array.from(socket.rooms, (value) => value);
-        console.log("Received data:", {
+        console.log("Received PING data:", {
           data,
-          roomArray,
         });
-        callback({ valid: true, serverInstanceId, time: new Date() });
+        // Callback used to send data back to the client if applicable.
+        if (callback)
+          callback({ valid: true, serverInstanceId, time: new Date() });
       } catch (err) {
         console.log({ err });
       }
@@ -40,13 +42,14 @@ export default class SocketEngine {
 
     socket.on("demo", async (data, callback) => {
       try {
+        // This function should be used to validate socket connection that it is associated with a valid user.
         await validate_socket(socket);
-        const roomArray = Array.from(socket.rooms, (value) => value);
-        console.log("Demo:", {
+        console.log("Received Demo data:", {
           data,
-          roomArray,
         });
-        callback({ valid: true, serverInstanceId, time: new Date() });
+        // Callback used to send data back to the client if applicable.
+        if (callback)
+          callback({ valid: true, serverInstanceId, time: new Date() });
       } catch (err) {
         console.log({ err });
       }
@@ -56,25 +59,37 @@ export default class SocketEngine {
   static async joinSocketRoom(socketRoom: string, socketId: string) {
     try {
       console.log({ socketRoom, socketId });
+      // Establishing SocketIO Server Access
       const io = getIO();
+
+      // getting the socket connection instance for the ID
       const socket = io.sockets.sockets.get(socketId);
 
-      if (socket?.rooms) {
-        // console.log({ socketRoom: socket.rooms });
-        const roomArray = Array.from(socket.rooms, (value) => value);
-        roomArray.forEach((room) => {
-          if (room == (socketRoom || "")) return;
-          socket.leave(room);
-        });
-      }
-
+      // Adding socket id to the user's private socket room
       if (socketRoom) {
         socket?.join(socketRoom);
       }
-      socket?.join(process.env.APP_MAIN_SOCKET_ROOM);
 
-      io.sockets.adapter.rooms.get(socketRoom);
-      console.log("UserManagement", { rooms: io.sockets.adapter.rooms });
+      // Getting a list of the main socket room
+      const main_socket_room = io.sockets.adapter.rooms.get(
+        process.env.APP_MAIN_SOCKET_ROOM
+      );
+
+      // Add socket connection to the main socket room
+      if (main_socket_room) {
+        // Checking if main socket room has the new ID
+        const has_socket_conn = main_socket_room.has(socketId);
+        if (!has_socket_conn) {
+          socket?.join(process.env.APP_MAIN_SOCKET_ROOM);
+        }
+      } else {
+        // If the room does not exist on this server it will be created upon adding the ID
+        socket?.join(process.env.APP_MAIN_SOCKET_ROOM);
+      }
+
+      console.log(`${socketRoom} IDs`, {
+        ids: io.sockets.adapter.rooms.get(socketRoom),
+      });
       return true;
     } catch (err) {
       throw err;

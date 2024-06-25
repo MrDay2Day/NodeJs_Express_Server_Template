@@ -140,8 +140,8 @@ export const multer_json_files = multer({
   fileFilter: jsonFileType,
 }).fields([{ name: "jsonFile", maxCount: 1 }]);
 
-export const multer_sheets = multer({
+export const multer_excel = multer({
   limits,
   storage,
   fileFilter: excelOnly,
-}).single("sheets");
+}).single("excel");
