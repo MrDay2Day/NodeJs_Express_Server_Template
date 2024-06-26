@@ -1,4 +1,8 @@
 import mysql from "mysql2/promise";
+import {
+  checkAndCreateMySQLDatabase,
+  createMySQLTables,
+} from "../../app/models/database/mysql/trigger";
 const sql_promise = mysql;
 
 export type MySQLConnectionType = {
@@ -35,3 +39,17 @@ export const connect_sql = async function () {
     mysql_connection_data_with_database
   );
 };
+
+export function ConnectMySQL() {
+  return new Promise(async function (resolve, reject) {
+    await checkAndCreateMySQLDatabase();
+    let my_sql_access = await sql_pool(mysql_connection_data_with_database);
+
+    await createMySQLTables(my_sql_access);
+    const data = await my_sql_access.connect();
+    my_sql_access.end();
+
+    console.log("MYSQL DATABASE CONNECTED!");
+    resolve(data);
+  });
+}

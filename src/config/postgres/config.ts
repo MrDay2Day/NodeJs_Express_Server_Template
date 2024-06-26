@@ -1,4 +1,8 @@
 import pg, { PoolConfig } from "pg";
+import {
+  checkAndCreatePGDatabase,
+  createPGTables,
+} from "../../app/models/database/potsgres/trigger";
 const { Pool } = pg;
 
 export const pg_connection_data = {
@@ -33,3 +37,19 @@ export const query_pg = async function (
   const pg_conn = new Pool(pg_connection_data_with_database);
   return await pg_conn.query(query, params);
 };
+
+export function ConnectPostGres() {
+  return new Promise(async function (resolve, reject) {
+    try {
+      await pg_pool(pg_connection_data);
+      await checkAndCreatePGDatabase();
+      await createPGTables();
+      console.log("POSTGRES DATABASE CONNECTED!");
+
+      resolve(true);
+    } catch (error) {
+      console.log({ error });
+      reject(error);
+    }
+  });
+}

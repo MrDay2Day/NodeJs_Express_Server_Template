@@ -25,7 +25,7 @@ _There is also a unique authorization method which I personally use which tags a
 
 ## What did I build **Repo**?
 
-Simple I am a **developer** who creates a lot of _servers_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I used most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
+Simple I am a **developer** who creates a lot of _servers_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I use most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
 
 So I've integrated a lot of 3rd party packages and services which I know a lot of people will love and also so honorary mentions from my favorites' list.
 
@@ -102,7 +102,7 @@ These are features & technologies that may or may not be integrated in the futur
 **Current List**
 
 - ✅ MySQL💡
-- ✅ PostGrSQL💡
+- ✅ PostGrSQL💡 _([Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47))_
 - ✅ MongoDB💡 _(Recommended DB for Scale)_
 - ✅ Socket.IO💡
 - ✅ Redis (Pub/Sub)🕯️
@@ -116,6 +116,6 @@ These are features & technologies that may or may not be integrated in the futur
 - ✏️ Stripe
 - ✏️ Paypal
 - ✏️ Stripe
-- 💭 HandlebarJS _(For specified routes)_
+- 💭 HandlebarsJS _(For specified routes)_
 - 💭 Google Auth _(With Recommendations and Procedures)_
 - 💭 Facebook Auth _(With Recommendations and Procedures)_

@@ -165,13 +165,18 @@ class DemoController {
     });
   }
 
-  // Demo of fetching a file securely and serving to frontend from Backblaze S3 whether it an image or file.
+  /*
+  Demo of fetching a file securely and serving to frontend from Backblaze S3 whether it an image or file.
+  */
   static async fetch_file(req: Request, res: Response, next: NextFunction) {
     try {
       // This is the information that needed to fetch the file
 
-      // Please take note of the required fields from "demo_file_info" which is the dat your get from uploading a file.
-      // NB: For images ONLY you get "uploadThumbnailData" AND "uploadRegularData" while every other file type ONLY has "uploadRegularData"
+      /**
+       Please take note of the required fields from "demo_file_info" which is the dat your get from uploading a file.
+       
+       NB: For images ONLY you get "uploadThumbnailData" AND "uploadRegularData" while every other file type ONLY has "uploadRegularData"
+       *  */
       return await fetchFile({
         fileName: demo_image_file.uploadRegularData.fileName,
         contentType: demo_image_file.uploadRegularData.contentType,

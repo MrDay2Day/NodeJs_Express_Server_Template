@@ -34,9 +34,9 @@ const b2_private = {
 };
 const b2 = new B2(b2_private);
 
-var encodedBase64_private = Buffer.from(
-  b2_private.applicationKeyId + ":" + b2_private.applicationKey
-).toString("base64");
+// var encodedBase64_private = Buffer.from(
+//   b2_private.applicationKeyId + ":" + b2_private.applicationKey
+// ).toString("base64");
 // console.log({ b2_private, encodedBase64_private });
 async function GetBucket() {
   try {
