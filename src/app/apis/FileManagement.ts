@@ -5,20 +5,20 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
 // @ts-ignore
-import imagemin from "imagemin";
+import imagemin from "imagemin"; // Has no declaration file for this module
 // @ts-ignore
-import imageminJpegtran from "imagemin-jpegtran";
-// @ts-ignore
+import imageminJpegtran from "imagemin-jpegtran"; // Has no declaration file for this module
 import imageminPngquant from "imagemin-pngquant";
 import imageminJpegRecompress from "imagemin-jpeg-recompress";
 
 import sizeOf from "buffer-image-size";
 
 import B2 from "backblaze-b2";
-import { NextFunction, Request, Response } from "express";
+import { Response } from "express";
+import { checkJSONToArray } from "../utils/helpers";
 
-const fileTypes = ["profileImage", "document", "image"];
-const imagesOnly = ["profileImage", "image"];
+const fileTypes = checkJSONToArray(process.env.FILE_TYPES || "");
+const imagesOnly = checkJSONToArray(process.env.IMAGES_ONLY || "");
 
 async function WriteFileToDB(x: any) {
   return x;
@@ -28,11 +28,11 @@ async function DeleteFileToDB(x: any) {
   return x;
 }
 
-const b2_private = {
+const b2_private_credentials = {
   applicationKeyId: process.env.BACKBLAZE_PRIVATE_KEY_ID,
   applicationKey: process.env.BACKBLAZE_PRIVATE_KEY,
 };
-const b2 = new B2(b2_private);
+const b2_private = new B2(b2_private_credentials);
 
 // var encodedBase64_private = Buffer.from(
 //   b2_private.applicationKeyId + ":" + b2_private.applicationKey
@@ -40,8 +40,8 @@ const b2 = new B2(b2_private);
 // console.log({ b2_private, encodedBase64_private });
 async function GetBucket() {
   try {
-    await b2.authorize(); // must authorize first (authorization lasts 24 hrs)
-    let response = await b2.getBucket({
+    await b2_private.authorize(); // must authorize first (authorization lasts 24 hrs)
+    let response = await b2_private.getBucket({
       bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
     });
   } catch (err) {
@@ -133,7 +133,7 @@ class Worker {
       //   filePath,
       //   Sha1,
       // });
-      const upload = await b2.uploadFile({
+      const upload = await b2_private.uploadFile({
         uploadUrl,
         uploadAuthToken: uploadAuthorizationToken,
         fileName: filePath,
@@ -152,13 +152,13 @@ class Worker {
   static backblazeUpload = async (file: any, type: string, userId: string) => {
     // return;
     try {
-      const response = await b2.authorize();
+      const response = await b2_private.authorize();
 
       // console.log({ response });
 
       const data = response.data;
 
-      const uploadRequest = await b2.getUploadUrl({
+      const uploadRequest = await b2_private.getUploadUrl({
         bucketId: data.allowed.bucketId,
       });
 
@@ -237,7 +237,7 @@ class Worker {
   ) => {
     // return;
     try {
-      const deleteRequest = await b2.deleteFileVersion({
+      const deleteRequest = await b2_private.deleteFileVersion({
         fileId,
         fileName,
       });
@@ -347,7 +347,7 @@ export async function fetchFile({
       throw { msg: "File fetch disabled.", code: "BB0000001" };
     }
 
-    var fileToSend = await b2.downloadFileByName({
+    var fileToSend = await b2_private.downloadFileByName({
       bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
       fileName,
       // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'

@@ -1,8 +1,14 @@
 // Mongoose options
 
 import mongoose from "mongoose";
+import path from "path";
 import { MongoMainListener } from "../../app/models/database/mongo/listener/listeners";
 import { MongoMemoryReplSet, MongoMemoryServer } from "mongodb-memory-server";
+import {
+  text_bright_cyan,
+  text_cyan,
+  text_yellow,
+} from "../../utils/serverDataInfo";
 
 export const MONGOOSE_OPTIONS = {
   // mongos: true,
@@ -16,7 +22,10 @@ export const MONGOOSE_OPTIONS = {
   retryWrites: true,
 };
 
+export const schemas: string[] = [];
+
 export function ConnectMongoDB() {
+  console.log(text_bright_cyan("\tCONNECTING TO MONGODB DATABASE..."));
   return new Promise(async function (resolve, reject) {
     const is_dev = process.env.NODE_ENV === "dev";
 
@@ -26,27 +35,48 @@ export function ConnectMongoDB() {
             {
               port: 50111,
               storageEngine: "wiredTiger",
+              dbPath: path.resolve(__dirname, "temp", "storage_1"),
             },
             {
               port: 50112,
               storageEngine: "wiredTiger",
+              dbPath: path.resolve(__dirname, "temp", "storage_2"),
             },
             {
               port: 50113,
               storageEngine: "wiredTiger",
+              dbPath: path.resolve(__dirname, "temp", "storage_3"),
             },
           ],
-          replSet: { dbName: process.env.MONGO_DEFAULT_DATABASE },
+          replSet: {
+            name: process.env.MONGO_REPLICA_SET_1,
+            dbName: process.env.MONGO_DEFAULT_DATABASE,
+          },
         })
       : null;
+
+    if (dev_server?.waitUntilRunning) {
+      dev_server?.waitUntilRunning();
+      console.log(
+        text_cyan(`\t\t-> MongoDB_Dev_Server --> ${dev_server.getUri()}`)
+      );
+    }
     const uri = is_dev ? dev_server?.getUri() || "" : process.env.MONGO_URL;
-    console.log({ uri });
 
     await mongoose
       .connect(uri, MONGOOSE_OPTIONS)
       .then(async (data) => {
-        console.log("MONGODB DATABASE CONNECTED!");
-        if (process.env.MONGO_REPLICA_SET) MongoMainListener();
+        console.log(
+          text_cyan(
+            `\t\t-> MongoDB Database ${process.env.MONGO_DEFAULT_DATABASE} initialized.`
+          )
+        );
+        schemas.forEach((x) =>
+          console.log(text_cyan(`\t\t-> MongoDB Collection ${x} initialized.`))
+        );
+        console.log(text_bright_cyan("\tMONGODB DATABASE CONNECTED!\n"));
+
+        if (process.env.MONGO_USE_REPLICA_SET) MongoMainListener();
         resolve(data);
       })
       .catch((mongoErr: any) => {

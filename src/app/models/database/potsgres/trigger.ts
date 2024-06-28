@@ -5,6 +5,7 @@ import {
   pg_connection_data,
   query_pg,
 } from "../../../../config/postgres/config";
+import { text_yellow } from "../../../../utils/serverDataInfo";
 
 export async function checkAndCreatePGDatabase(): Promise<boolean> {
   const client = new Client(pg_connection_data);
@@ -17,10 +18,12 @@ export async function checkAndCreatePGDatabase(): Promise<boolean> {
     );
     if (res.rowCount === 0) {
       await client.query(`CREATE DATABASE ${dbName}`);
-      console.log(`PG Database ${dbName} created successfully.`);
+      console.log(
+        text_yellow(`\t\t-> PG Database ${dbName} created successfully.`)
+      );
       return true;
     } else {
-      console.log(`PG Database ${dbName} already exists.`);
+      console.log(text_yellow(`\t\t-> PG Database ${dbName} already exists.`));
       return true;
     }
   } catch (err) {
@@ -49,10 +52,16 @@ export async function createPGTables(): Promise<{
         if (res.rowCount === 0) {
           await query_pg(table_data.script, []);
           console.log(
-            `PG Table ${table_data.table_name} created successfully.`
+            text_yellow(
+              `\t\t-> PG Table ${table_data.table_name} created successfully.`
+            )
           );
         } else {
-          console.log(`PG Table ${table_data.table_name} already exists.`);
+          console.log(
+            text_yellow(
+              `\t\t-> PG Table ${table_data.table_name} already exists.`
+            )
+          );
         }
       } catch (error) {
         console.log("createPGTables", { error });

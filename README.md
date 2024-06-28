@@ -9,19 +9,20 @@
 
 # [Day2Day Group Technologies](https://day2dayja.com)
 
-Created by: _[MrDay2Day](https://github.com/MrDay2Day)_
+Created by: [**MrDay2Day**](https://github.com/MrDay2Day)  
+Node Version: [**v18.19.0**](https://nodejs.org/en/download/package-manager)
 
 ## What is **Repo** this?
 
 **Short answer:** A Boilerplate NodeJS Express Server Template written in Typescript built for scale!
 
-**A little more explanation:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & `Redis`. This _template_ is design to operate at scale using `Redis` and easily be deployed as a node cluster or/and on separate machines.
+**A little more explanation:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & ~~`Redis`~~ **->** `KeyDB`. This _template_ is design to operate at scale using ~~`Redis`~~ **->** `KeyDB` and can easily be deployed as a node cluster or/and on separate machines locally or/and globally.
 
-This template has built-in file management using `S3` _(Simple Storage Service)_ protocol and an emailing engine that can send raw `html` emails with **attachments**.
+This template has built-in file management using `S3` _(Simple Storage Service)_ protocol and an emailing engine that can send raw `html` emails with **attachments** through `AWS SES` _(Simple Emailing Service)_.
 
-_There is also a unique authorization method which I personally use which tags all machines with a unique cookies that make a request to server so you are able to have some sense of the devices used by your users and is also very helpful when it comes to security and usage patterns._
+**NB:**_There is also a unique authorization method which I personally use which tags all machines with a unique id stored in a cookie that make a request to server so you are able to have some sense of the devices used by your users and is also very helpful when it comes to security and usage patterns for users._
 
-**These are all custom solution and are at no point in time a RULE that should be followed, you are welcome to clone and edit a distribute as you see fit with any changes or no changes.**
+### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to clone, edit and distribute as you see fit with any changes or no changes.**
 
 ## What did I build **Repo**?
 
@@ -40,7 +41,7 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 - MongoDB
 - MySQL
 - PostGreSQL
-- Redis (Used for Pub/Sub can be replaced with KeyDB)
+- ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**)
 
 ### Technologies
 
@@ -52,10 +53,18 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 
 ---
 
+## Why recommend **KeyDB** > Redis
+
+Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub.
+<img src="secure/ops.png" width="700"/>
+You are still able to use `Redis` if it and it's license best suit your needs
+
+---
+
 ### **Key Features**
 
 1. Self generating SQL databases and tables.
-1. Scalability through redis 7 websocket.
+1. Scalability through ~~Redis~~ **-> KeyDB** using websocket connections.
 1. Using multiple database concurrently.
 
 ---
@@ -97,7 +106,8 @@ These are features & technologies that may or may not be integrated in the futur
 
 **Implementation Style 👇🏿**  
 💡 Custom Implementation _(All Custom implementations are accompanied with documentation and examples)_
-🕯️ Standard Implementation
+🕯️ Standard/Traditional Implementation
+❓ Not Sure
 
 **Current List**
 
@@ -105,17 +115,18 @@ These are features & technologies that may or may not be integrated in the futur
 - ✅ PostGrSQL💡 _([Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47))_
 - ✅ MongoDB💡 _(Recommended DB for Scale)_
 - ✅ Socket.IO💡
-- ✅ Redis (Pub/Sub)🕯️
-- ✅ Multer🕯️
+- ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**)💡
+- ✅ Multer💡
 - ✅ Backblaze💡
+- ✏️ Docker🕯️
 - ✅ AWS💡
-- ⚠️ tRCP
-- 💭 GraphQL
-- ➡️ ServerSide Events
-- ✏️ Paddle
-- ✏️ Stripe
-- ✏️ Paypal
-- ✏️ Stripe
+- ⚠️ tRCP❓
+- 💭 GraphQL❓
+- ➡️ ServerSide Events💡
+- ✏️ Paddle❓
+- ✏️ Stripe❓
+- ✏️ Paypal❓
+- ✏️ Stripe❓
 - 💭 HandlebarsJS _(For specified routes)_
 - 💭 Google Auth _(With Recommendations and Procedures)_
 - 💭 Facebook Auth _(With Recommendations and Procedures)_

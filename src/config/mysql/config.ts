@@ -3,6 +3,7 @@ import {
   checkAndCreateMySQLDatabase,
   createMySQLTables,
 } from "../../app/models/database/mysql/trigger";
+import { text_bright_magenta } from "../../utils/serverDataInfo";
 const sql_promise = mysql;
 
 export type MySQLConnectionType = {
@@ -41,6 +42,7 @@ export const connect_sql = async function () {
 };
 
 export function ConnectMySQL() {
+  console.log(text_bright_magenta("\tCONNECTING TO MYSQL DATABASE..."));
   return new Promise(async function (resolve, reject) {
     await checkAndCreateMySQLDatabase();
     let my_sql_access = await sql_pool(mysql_connection_data_with_database);
@@ -49,7 +51,7 @@ export function ConnectMySQL() {
     const data = await my_sql_access.connect();
     my_sql_access.end();
 
-    console.log("MYSQL DATABASE CONNECTED!");
+    console.log(text_bright_magenta("\tMYSQL DATABASE CONNECTED!\n"));
     resolve(data);
   });
 }

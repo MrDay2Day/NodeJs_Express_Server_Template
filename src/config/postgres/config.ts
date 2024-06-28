@@ -3,6 +3,7 @@ import {
   checkAndCreatePGDatabase,
   createPGTables,
 } from "../../app/models/database/potsgres/trigger";
+import { text_bright_yellow } from "../../utils/serverDataInfo";
 const { Pool } = pg;
 
 export const pg_connection_data = {
@@ -39,12 +40,13 @@ export const query_pg = async function (
 };
 
 export function ConnectPostGres() {
+  console.log(text_bright_yellow("\tCONNECTING TO POSTGRES DATABASE..."));
   return new Promise(async function (resolve, reject) {
     try {
       await pg_pool(pg_connection_data);
       await checkAndCreatePGDatabase();
       await createPGTables();
-      console.log("POSTGRES DATABASE CONNECTED!");
+      console.log(text_bright_yellow("\tPOSTGRES DATABASE CONNECTED!\n"));
 
       resolve(true);
     } catch (error) {

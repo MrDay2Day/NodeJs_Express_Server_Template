@@ -13,17 +13,14 @@ class DBConfiguration {
   ) {
     try {
       if (process.env.MONGO_ACTIVE) {
-        console.log("CONNECTING TO MONGODB DATABASE...");
         await ConnectMongoDB();
       }
 
       if (process.env.PG_ACTIVE) {
-        console.log("CONNECTING TO POSTGRES DATABASE...");
         await ConnectPostGres();
       }
 
       if (process.env.MYSQL_ACTIVE) {
-        console.log("CONNECTING TO MYSQL DATABASE...");
         await ConnectMySQL();
       }
       return start_server(server);

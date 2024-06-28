@@ -2,6 +2,9 @@ export {};
 
 declare global {
   namespace NodeJS {
+    /**
+     * All the required environment variables for the server application
+     */
     interface ProcessEnv {
       NODE_ENV: string;
       APP_NAME: string;
@@ -10,9 +13,13 @@ declare global {
       JWT_TOKEN_EXPIRE: string;
       SALT: string;
       DB_TYPE: "mysql" | "postgres" | "mongo";
-      FILE_UP_DOWN: string;
+      // Socket Management
       APP_SOCKET_NAME: string;
       APP_MAIN_SOCKET_ROOM: string;
+      // File Management
+      FILE_UP_DOWN: string;
+      FILE_TYPES: string;
+      IMAGES_ONLY: string;
       // Redis Server
       USE_REDIS: string;
       REDIS_URL: string;
@@ -21,7 +28,8 @@ declare global {
       REDIS_PASS: string;
       //MongoDB
       MONGO_ACTIVE: string;
-      MONGO_REPLICA_SET: string;
+      MONGO_USE_REPLICA_SET: string;
+      MONGO_REPLICA_SET_1: string;
       MONGO_URL: string;
       MONGO_CLUSTER: string;
       MONGO_USER: string;

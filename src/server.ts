@@ -7,24 +7,25 @@ import { app } from "./middleware/modules";
 import mainRouter from "./app/app";
 import http from "http";
 import DBConfiguration from "./config/db_config";
+import { text_bright, text_bright_red } from "./utils/serverDataInfo";
 
 function start() {
   try {
     console.log(
-      `
-    \n**************************************\n
-            START ${process.env.APP_NAME} SERVER\n
-    **************************************\n`
+      text_bright(`
+\n**************************************\n
+    START `) +
+        `${text_bright_red(process.env.APP_NAME)}` +
+        text_bright(` SERVER\n
+**************************************\n`)
     );
     console.log("INITIALIZING MIDDLEWARE AND ENDPOINTS...");
     app.use("/", mainRouter);
     console.log("INITIALIZATION COMPLETE!");
 
-    console.log("INITIALIZATION COMPLETE!");
-
     console.log("INITIALIZING SERVER...");
     const server = http.createServer(app);
-    console.log("WEBSERVER INITIALIZED!");
+    console.log("WEBSERVER INITIALIZED!\n");
     DBConfiguration.initiate(server);
   } catch (error) {
     console.log("SERVER ERROR", { error });

@@ -4,6 +4,7 @@ import {
   sql_pool,
 } from "../../../../config/mysql/config";
 import { mysql_tables } from "./schemas/tables";
+import { text_magenta } from "../../../../utils/serverDataInfo";
 
 export async function checkAndCreateMySQLDatabase(): Promise<boolean> {
   // Create a connection to the MySQL server
@@ -25,10 +26,18 @@ export async function checkAndCreateMySQLDatabase(): Promise<boolean> {
       if (databases.length === 0) {
         // Create the database if it does not exist
         await connection.query(`CREATE DATABASE ${databaseName}`);
-        console.log(`MySQL Database "${databaseName}" created successfully.`);
+        console.log(
+          text_magenta(
+            `\t\t-> MySQL Database "${databaseName}" created successfully.`
+          )
+        );
         return true;
       } else {
-        console.log(`MySQL Database "${databaseName}" already exists.`);
+        console.log(
+          text_magenta(
+            `\t\t-> MySQL Database "${databaseName}" already exists.`
+          )
+        );
       }
     } else {
       throw { msg: "Server Not initiated." };
@@ -68,10 +77,16 @@ export async function createMySQLTables(connection: Connection): Promise<{
             await connection.execute(table_data.script);
             created++;
             console.log(
-              `MySQL Table ${table_data.table_name} created successfully.`
+              text_magenta(
+                `\t\t-> MySQL Table ${table_data.table_name} created successfully.`
+              )
             );
           } else {
-            console.log(`MySQL Table ${table_data.table_name} already exists.`);
+            console.log(
+              text_magenta(
+                `\t\t-> MySQL Table ${table_data.table_name} already exists.`
+              )
+            );
           }
         } else {
           throw false;

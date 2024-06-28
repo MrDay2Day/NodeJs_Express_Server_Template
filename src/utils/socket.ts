@@ -1,4 +1,4 @@
-// This files allows us to share our SocketIO connection across all files but importing this file.
+/** This files allows us to share our SocketIO connection across the application. */
 console.log("INITIALIZING SOCKET CONNECTION...");
 
 import { createClient } from "redis";
@@ -18,7 +18,7 @@ const subClient = process.env.USE_REDIS === "y" ? pubClient?.duplicate() : null;
 export let io: Server;
 
 let totalDataSent = 0;
-export const init = (httpServer: http.Server) => {
+export async function init(httpServer: http.Server) {
   io = new Server(httpServer, {
     // secure: true,
     cookie: true,
@@ -32,7 +32,7 @@ export const init = (httpServer: http.Server) => {
     let redisConnect = true;
     try {
       if (!pubClient?.isOpen) {
-        pubClient?.connect();
+        await pubClient?.connect();
       }
     } catch (error) {
       redisConnect = false;
@@ -41,23 +41,22 @@ export const init = (httpServer: http.Server) => {
 
     try {
       if (!subClient?.isOpen) {
-        subClient?.connect();
+        await subClient?.connect();
       }
     } catch (error) {
       redisConnect = false;
       console.log("REDIS SUBSCRIBING CLIENT UNABLE TO CONNECT!!!", error);
     }
     redisConnect ? io.adapter(createAdapter(pubClient, subClient)) : null;
-    // console.log({ pubClient, subClient });
 
     subClient?.on("connect", () => {
       console.log("REDIS SUBSCRIBING CLIENT CONNECTED!!!");
     });
-    subClient?.on("error", (redisErr: any | unknown) => {
-      console.log({ redisErr });
-    });
     pubClient?.on("connect", () => {
       console.log("REDIS PUBLISHING CLIENT CONNECTED!!!");
+    });
+    subClient?.on("error", (redisErr: any | unknown) => {
+      console.log({ redisErr });
     });
     pubClient?.on("error", (redisErr: any | unknown) => {
       console.log({ redisErr });
@@ -67,22 +66,23 @@ export const init = (httpServer: http.Server) => {
   }
 
   return io;
-};
+}
 
-export const getIO = () => {
+export async function getIO() {
   if (!io) {
     throw new Error("Socket.io not initialized!");
   }
   console.log("SOCKET.IO INITIALIZED!");
   return io;
-};
-export const redisServer = () => {
+}
+
+export async function redisServer() {
   if (process.env.USE_REDIS === "y") {
     return pubClient?.duplicate();
   } else {
     return false;
   }
-};
+}
 
 /**
  * To use io

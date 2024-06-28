@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from "uuid";
 // This the validation results for or custom middleware validations
 import { validationResult } from "express-validator";
-import { DemoTypes } from "../models/database/types/Demo_Types";
+import { DemoTypes, ErrorType } from "../models/database/types/Demo_Types";
 
 import { faker } from "@faker-js/faker";
 
@@ -34,14 +35,15 @@ io.to(<SOCKET_ID | SOCKET_ROOM>).emit("<listener>", data);
 */
 
 // Handling multipart/form-data inside the controller
-import { multer_single_image } from "../../middleware/multer";
+import { multer_single_image, UploadedFileType } from "../../middleware/multer";
 import multer from "multer";
 import FileManagement, { fetchFile } from "../apis/FileManagement";
 // Sample Upload Data
 import { demo_image_file, excel_file } from "./file_info";
+import { getRandomNumber } from "../utils/helpers";
 
 function generate_user() {
-  return {
+  const demo_user = {
     userId: faker.string.uuid(),
     username: faker.internet.userName(),
     first_name: faker.person.firstName(),
@@ -54,7 +56,11 @@ function generate_user() {
     dob: faker.date.birthdate(),
     registeredAt: faker.date.past(),
     userType: "User",
+    age: 0,
   };
+  const user_dob_year = demo_user.dob.getFullYear();
+  demo_user.age = new Date().getFullYear() - user_dob_year;
+  return demo_user;
 }
 
 class DemoController {
@@ -67,8 +73,12 @@ class DemoController {
       return res
         .status(200)
         .json({ valid: true, route: "no_auth_demo", number });
-    } catch (error: any) {
-      return res.status(400).json({
+    } catch (error: ErrorType) {
+      /**Recommendation: Sending status 200 -> OK which means the request was OK as it relates to your http request status.
+       * On the client side the logic should look for the variable 'valid' and it's value 'true' or 'false'.
+       * -> true if the request yielded the intended result.
+       * -> false if the request did not yield the intended result.*/
+      return res.status(200).json({
         valid: false,
         code: "DEMO000002",
         msg: error.msg || "Something went wrong.",
@@ -81,7 +91,7 @@ class DemoController {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        res.statusCode = 400;
+        res.statusCode = 200;
         console.log(errors);
         return res.json({
           valid: false,
@@ -97,15 +107,18 @@ class DemoController {
       return res
         .status(200)
         .json({ valid: true, route: "auth_demo", req_body: { number, email } });
-    } catch (error: any) {
-      return res.status(400).json({ valid: false, code: "DEMO000001", error });
+    } catch (error: ErrorType) {
+      return res.status(200).json({ valid: false, code: "DEMO000001", error });
     }
   }
 
   // Demo controller to handle file upload using multer before the controller
   static async handle_file_1(req: Request, res: Response, next: NextFunction) {
     try {
-      const { files, file } = req;
+      const { files, file } = req as {
+        files: UploadedFileType[];
+        file: UploadedFileType;
+      };
       const { demo, name } = req.body as { demo: string; name: string };
       const { type } = req.params;
 
@@ -128,8 +141,8 @@ class DemoController {
       return res
         .status(200)
         .json({ valid: true, route: "handle_file", file_data, body: req.body });
-    } catch (error: any) {
-      return res.status(400).json({
+    } catch (error: ErrorType) {
+      return res.status(200).json({
         valid: false,
         code: "DEMO000003A",
         msg: error.msg || "Something went wrong.",
@@ -139,24 +152,27 @@ class DemoController {
 
   // Here we use multer to handle multipart/form-data in the controller for a more custom experience, here we can deliver a custom error message or handle errors in another manor.
   static async handle_file_2(req: Request, res: Response, next: NextFunction) {
-    multer_single_image(req, res, function (err) {
+    multer_single_image(req, res, function (error) {
       try {
-        if (err instanceof multer.MulterError) {
-          console.log("Multer Error", { err });
-          throw { err };
-        } else if (err) {
-          console.log("Unknown Error", { err });
-          throw { err };
+        if (error instanceof multer.MulterError) {
+          console.log("Multer Error", { error });
+          throw { error };
+        } else if (error) {
+          console.log("Unknown Error", { error });
+          throw { error };
           // An unknown error occurred when uploading.
         }
-        const { files, file } = req;
+        const { files, file } = req as {
+          files: UploadedFileType[];
+          file: UploadedFileType;
+        };
         const { demo, name } = req.body as { demo: string; name: string };
 
-        console.log({ files, file, demo });
+        console.log({ files, file, demo, name });
 
         return res.status(200).json({ valid: true, route: "handle_file" });
-      } catch (error: any) {
-        return res.status(400).json({
+      } catch (error: ErrorType) {
+        return res.status(200).json({
           valid: false,
           code: "DEMO000003B",
           msg: error.msg || "Something went wrong.",
@@ -182,8 +198,8 @@ class DemoController {
         contentType: demo_image_file.uploadRegularData.contentType,
         res,
       });
-    } catch (error: any) {
-      return res.status(400).json({
+    } catch (error: ErrorType) {
+      return res.status(200).json({
         valid: false,
         code: "DEMO000003B",
         msg: error.msg || "Something went wrong.",
@@ -199,7 +215,7 @@ class DemoController {
       c: string | undefined;
     };
     console.log({ a, b, c });
-    return res.json({ a, b, c });
+    return res.status(200).json({ a, b, c });
   }
 
   // Demo handling url params
@@ -210,7 +226,7 @@ class DemoController {
       z: string | undefined;
     };
     console.log({ x, y, z });
-    return res.json({ x, y, z });
+    return res.status(200).json({ x, y, z });
   }
 
   // Example Inserting user into MySQL Database
@@ -220,30 +236,50 @@ class DemoController {
     next: NextFunction
   ) {
     try {
+      /**We generate a random user. */
       const demo_user = generate_user();
 
-      const user_dob_year = demo_user.dob.getFullYear();
-      const age = new Date().getFullYear() - user_dob_year;
-
+      /**We connect to the SQL database */
       const sql = await connect_sql();
+      /**We Insert the data into the Demo table */
       const [info] = (await sql.query(
         `insert into demo(name, age, dob, userType) values(?, ?, ?, ?)`,
-        [demo_user.full_name, age, demo_user.dob, demo_user.userType]
+        [demo_user.full_name, demo_user.age, demo_user.dob, demo_user.userType]
       )) as { insertId: number }[];
 
+      /**Generating a 'socketRoomId' which we can use to create a socket room for all the socket connection link to the specified user. */
+      const socketRoomId = uuidv4();
+      /**Insert 'socketRoomId' into 'DemoSocketRoomId' with the '_id' of the newly created user which is used for the relation.*/
+      await sql.query(
+        `insert into DemoSocketRoomId(demo_id, socketRoomId) values(?, ?)`,
+        [info.insertId, socketRoomId]
+      );
+
+      /**Creating a new type 'SelectDemoUserType' with 'QueryResult' linked with the 'DemoTypes' in an array as it will be return from the query. Now the user will have all the types for the result.*/
       type SelectDemoUserType = QueryResult & [DemoTypes];
-      const [query_res] = (await sql.query(`select * from demo where id=?`, [
+
+      /**We retrieve the user info from the demo table */
+      const [query_res] = (await sql.query(`select * from demo where _id=?`, [
         info.insertId,
+        /**Here we assigned the 'SelectDemoUserType' so we know the types of the data that should be returned*/
       ])) as SelectDemoUserType[];
 
+      /**Validating if there is a result */
+      if (query_res.length <= 0)
+        throw { msg: "User not found", code: "QUY0000001" };
+
+      /**The user info is pull which is the 'DemoTypes' which is in an array */
       const user = query_res[0];
 
+      /**Close SQL connection*/
       sql.end();
 
-      return res.status(200).json({ data: user, valid: true });
-    } catch (error: any) {
+      return res
+        .status(200)
+        .json({ data: { ...user, socketRoomId }, valid: true });
+    } catch (error: ErrorType) {
       console.log({ error });
-      return res.status(400).json({
+      return res.status(200).json({
         valid: false,
         code: "DEMO000007",
         msg: error.msg || "Something went wrong.",
@@ -251,7 +287,7 @@ class DemoController {
     }
   }
 
-  // Example Inserting user into PostGres Database
+  // Example Inserting user into PostGres Database "Demo" and insert "DemoSocketRoomId"
   static async create_user_postgres(
     req: Request,
     res: Response,
@@ -260,20 +296,26 @@ class DemoController {
     try {
       const demo_user = generate_user();
 
-      const user_dob_year = demo_user.dob.getFullYear();
-      const age = new Date().getFullYear() - user_dob_year;
+      const socketRoomId = uuidv4();
 
       const data = await query_pg(
-        `insert into demo(name, age, dob, userType) values($1, $2, $3, $4) returning id, name, age, dob, userType, createdAt, updatedAt;`,
-        [demo_user.full_name, age, demo_user.dob, demo_user.userType]
+        `insert into demo(name, age, dob, userType) values($1, $2, $3, $4) returning _id, name, age, dob, userType, createdAt, updatedAt;`,
+        [demo_user.full_name, demo_user.age, demo_user.dob, demo_user.userType]
       );
 
       const user = data.rows[0] as DemoTypes;
 
-      return res.status(200).json({ data: user, valid: true });
-    } catch (error: any) {
+      await query_pg(
+        `insert into "DemoSocketRoomId"(socket_room_id, demoid) values($1, $2);`,
+        [socketRoomId, user._id || ""]
+      );
+
+      return res
+        .status(200)
+        .json({ data: { ...user, socketRoomId }, valid: true });
+    } catch (error: ErrorType) {
       console.log({ error });
-      return res.status(400).json({
+      return res.status(200).json({
         valid: false,
         code: "DEMO000008",
         msg: error.msg || "Something went wrong.",
@@ -281,31 +323,35 @@ class DemoController {
     }
   }
 
-  // Example Inserting user into MySQL Database
+  // Example Inserting user into MySQL Database "Demo" and insert "DemoSocketRoomId"
   static async create_user_mongo(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
     try {
+      /**We generate a random user. */
       const demo_user = generate_user();
 
-      const user_dob_year = demo_user.dob.getFullYear();
-      const age = new Date().getFullYear() - user_dob_year;
-
+      /**Create a 'Demo' document with the user info from 'demo_user' */
       const data = new Demo({
         _id: demo_user.userId,
         name: demo_user.full_name,
-        age,
+        age: demo_user.age,
         dob: demo_user.dob,
         userType: demo_user.userType,
+        socketRoomId: uuidv4(),
       });
+      /**Saving new Document to Database */
       await data.save();
 
+      /**We use the method function the change the ago with ease without using 'updateOne' etc. ensure to use the 'await' flag. */
+      await data.updateAge(getRandomNumber(23, 67));
+
       return res.status(200).json({ data, valid: true });
-    } catch (error: any) {
+    } catch (error: ErrorType) {
       console.log({ error });
-      return res.status(400).json({
+      return res.status(200).json({
         valid: false,
         code: "DEMO000009",
         msg: error.msg || "Something went wrong.",
