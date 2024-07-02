@@ -36,7 +36,7 @@ const DemoAccountOptions = {
     ref: "Demo",
   },
   account: {
-    type: Number,
+    type: String,
     required: true,
   },
   balance: {

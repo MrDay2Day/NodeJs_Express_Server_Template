@@ -16,7 +16,7 @@ export type DemoTypes = {
 export type DemoAccountTypes = {
   _id: string;
   demo_id: string;
-  account: number;
+  account: string;
   balance: number;
 };
 

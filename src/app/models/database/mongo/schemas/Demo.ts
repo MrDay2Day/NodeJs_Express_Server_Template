@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
 
@@ -8,6 +9,7 @@ import { Document } from "mongoose"; // Mongodb Document type
 import { DemoTypes } from "../../types/Demo_Types";
 /**Importing schemas array to push this schema's name to it. */
 import { schemas } from "../../../../../config/mongo/config";
+import DemoAccount from "./Demo_account";
 
 const MainDb = MONGO_DEFAULT_DATABASE;
 const Schema = mongoose.Schema;
@@ -27,6 +29,7 @@ export type DemoSchemaType = Document &
   DemoTypes & {
     /**Here we can add the 'methods' to the type so it can be used with intellisense.*/
     updateAge: (x: number) => Promise<DemoSchemaType>;
+    updateName: (x: string) => Promise<DemoSchemaType>;
   };
 
 /**Creating document template structure. */
@@ -64,10 +67,23 @@ const demoSchema = new Schema<DemoSchemaType>(DemoOptions, {
   shardKey: { _id: 1 },
 });
 
+/**Schema Static function, used to create a new document and other function alongside creating the document
+ * This example creates a 'Demo' document and also creates a 'DemoAccount' document.
+ */
 demoSchema.statics.createDemo = async function (data: DemoTypes) {
   try {
     const a_demo = new this(data);
     await a_demo.save();
+    /**Creating a new account when a user is created. */
+    const new_demo_account = new DemoAccount({
+      _id: uuidv4(),
+      demo_id: a_demo._id,
+      account: uuidv4(),
+      balance: 0,
+    });
+    await new_demo_account.save();
+
+    console.log({ new_demo_account });
     return a_demo;
   } catch (error) {
     console.log("demoSchema Error - CreateDemo", { error });
@@ -90,7 +106,10 @@ demoSchema.method("updateAge", async function (new_age: number) {
   }
 });
 
-demoSchema.methods.updateName = async function () {
+demoSchema.methods.updateName = async function (new_name: string) {
+  this.name = new_name;
+  await this.save();
+  return this;
   //.. Another way to create a method function
 };
 

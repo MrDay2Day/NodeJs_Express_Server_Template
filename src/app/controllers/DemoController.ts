@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
 // This the validation results for or custom middleware validations
 import { validationResult } from "express-validator";
-import { DemoTypes, ErrorType } from "../models/database/types/Demo_Types";
+import {
+  DemoTypes,
+  ErrorType,
+  UserType,
+} from "../models/database/types/Demo_Types";
 
 import { faker } from "@faker-js/faker";
 
@@ -44,18 +48,20 @@ import { getRandomNumber } from "../utils/helpers";
 
 function generate_user() {
   const demo_user = {
+    _id: faker.string.uuid(),
     userId: faker.string.uuid(),
     username: faker.internet.userName(),
     first_name: faker.person.firstName(),
     last_name: faker.person.lastName(),
     full_name: faker.person.fullName(),
+    name: faker.person.fullName(),
     phone: parseInt(`1876${faker.string.numeric("#######")}`),
     email: faker.internet.email(),
     avatar: faker.image.avatar(),
     password: faker.internet.password(),
     dob: faker.date.birthdate(),
     registeredAt: faker.date.past(),
-    userType: "User",
+    userType: UserType.User,
     age: 0,
   };
   const user_dob_year = demo_user.dob.getFullYear();
@@ -332,6 +338,18 @@ class DemoController {
     try {
       /**We generate a random user. */
       const demo_user = generate_user();
+      const demo_user_1 = generate_user();
+
+      /**Using the predefined Schema Static function */
+      const demo_static_result = await Demo.createDemo({
+        _id: demo_user_1.userId,
+        name: demo_user_1.full_name,
+        age: demo_user_1.age,
+        dob: demo_user_1.dob,
+        userType: demo_user_1.userType,
+        socketRoomId: uuidv4(),
+      });
+      console.log({ demo_static_result });
 
       /**Create a 'Demo' document with the user info from 'demo_user' */
       const data = new Demo({

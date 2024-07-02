@@ -1,6 +1,4 @@
 import multer from "multer";
-import { v4 as uuidv4 } from "uuid";
-import crypto from "crypto";
 import { Request } from "express";
 
 // Params for multer middleware
