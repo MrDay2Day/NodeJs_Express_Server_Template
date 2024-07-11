@@ -57,6 +57,7 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 
 Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub.
 <img src="secure/ops.png" width="700"/>
+
 You are still able to use `Redis` if it and it's license best suit your needs
 
 ---
