@@ -6,10 +6,28 @@ const mongo = mongoose.connection.readyState;
 import { io } from "../../../utils/socket";
 
 import { CookieOptions, NextFunction, Request, Response } from "express";
+import DBConfiguration from "../../../config/db_config";
 
 type NewReqType = Request & { userId: string };
+
+/**
+ * The `Misc` class provides static methods for handling various requests and errors.
+ */
 class Misc {
-  static ping = async (req: Request, res: Response, next: NextFunction) => {
+  /**
+   * Handles ping requests, setting cookies and responding with server status.
+   *
+   * @static
+   * @async
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function.
+   * @returns {Promise<void>} A promise that resolves when the request is handled.
+   * @throws Will throw an error if any issues occur while handling the request.
+   * @example
+   * app.get('/ping', Misc.ping);
+   */
+  static ping = async (req: Request, res: Response): Promise<void> => {
     const date = new Date();
 
     // console.log(req.cookies);
@@ -54,13 +72,18 @@ class Misc {
             ? { valid: true }
             : {
                 success: {
+                  date,
                   server_status: true,
+                  production:
+                    process.env.NODE_ENV === "production" ? true : false,
                   secondary_modules: {
-                    database: process.env.DB_TYPE,
-                    production:
-                      process.env.NODE_ENV === "production" ? true : false,
                     socket_status: io ? true : false,
-                    date,
+                    redis_status: !!process.env.USE_REDIS,
+                    database_status: {
+                      mongodb: DBConfiguration.database_status().mongodb,
+                      mysql: DBConfiguration.database_status().mysql,
+                      postgres: DBConfiguration.database_status().postgres,
+                    },
                   },
                 },
                 valid: true,
@@ -70,11 +93,20 @@ class Misc {
     } catch (err) {}
   };
 
-  static validate = async (
-    req: NewReqType,
-    res: Response,
-    next: NextFunction
-  ) => {
+  /**
+   * Validates the user by checking the `userId` in the request object.
+   *
+   * @static
+   * @async
+   * @param {NewReqType} req - The request object, extended with `userId`.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function.
+   * @returns {Promise<void>} A promise that resolves when the request is handled.
+   * @throws Will throw an error if the user is not valid.
+   * @example
+   * app.post('/validate', Misc.validate);
+   */
+  static validate = async (req: NewReqType, res: Response): Promise<void> => {
     try {
       const userId = req.userId;
       if (userId) {
@@ -87,7 +119,23 @@ class Misc {
     }
   };
 
-  static error404 = async (req: Request, res: Response, next: NextFunction) => {
+  /**
+   * Handles 404 errors by responding with a 404 status and a simple HTML message.
+   *
+   * @static
+   * @async
+   * @param {Request} req - The request object.
+   * @param {Response} res - The response object.
+   * @param {NextFunction} next - The next middleware function.
+   * @returns {Promise<void>} A promise that resolves when the request is handled.
+   * @example
+   * app.use(Misc.error404);
+   */
+  static error404 = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/html");
     res.send(`<div><h1>Page does not exist</h1></div>`);

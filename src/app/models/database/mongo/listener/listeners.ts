@@ -1,4 +1,4 @@
-import Demo from "../schemas/Demo";
+import Demo from "../schemas/Demo_User";
 
 /**
  * Here you can create listeners for your MongoDb instance to execute specific actions for a specified 'operationType' for a specified collection.

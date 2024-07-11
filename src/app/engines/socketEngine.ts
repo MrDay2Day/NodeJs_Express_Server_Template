@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from "uuid";
   When sending any message use the user's "id". When the message is sent to the user's "id" fetch the user's "socket_room_id" and then send message to that room.
 
  */
-
 export default class SocketEngine {
   static async listenerFunc(
     socket: Socket,
@@ -103,14 +102,14 @@ export default class SocketEngine {
   }
 }
 
+/**
+  Validate socket connection with "socket_room_id" method.
+
+  When a socket is sending a message you SHOULD send the user's id when the event is triggered fetch the user info which will include the user's "socket_room_id" then check if that "socket.id" from the socket connection is in the user's private socket room, if it is then the message can be sent else throw an error.
+ */
 async function validate_socket(socket: Socket) {
   const socket_id = socket.id;
 
-  /**
-    Validate socket connection with "socket_room_id" method.
-
-    When a socket is sending a message you SHOULD send the user's id when the event is triggered fetch the user info which will include the user's "socket_room_id" then check if that "socket.id" from the socket connection is in the user's private socket room, if it is then the message can be sent else throw an error.
-   */
   if (!socket_id) {
     throw new Error("Not Authenticated.");
   }

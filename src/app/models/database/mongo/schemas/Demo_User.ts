@@ -10,27 +10,28 @@ import { DemoTypes } from "../../types/Demo_Types";
 /**Importing schemas array to push this schema's name to it. */
 import { schemas } from "../../../../../config/mongo/config";
 import DemoAccount from "./Demo_account";
+import { getRandomNumber } from "../../../../utils/helpers";
 
 const MainDb = MONGO_DEFAULT_DATABASE;
 const Schema = mongoose.Schema;
 
-const collection = "Demo";
+const collection = "Demo_User";
 /**Adding collection name to schemas array so we can keep tract of all collections*/
 schemas.push(collection);
 /**
  Creating a custom Type for the schema that includes mongoose 'Document' type. 
  */
 
-export type DemoModelType = mongoose.Model<DemoSchemaType> & {
-  createDemo: (x: DemoTypes) => Promise<DemoSchemaType>;
-};
-
 export type DemoSchemaType = Document &
   DemoTypes & {
     /**Here we can add the 'methods' to the type so it can be used with intellisense.*/
-    updateAge: (x: number) => Promise<DemoSchemaType>;
+    updateDOB: (x: Date) => Promise<DemoSchemaType>;
     updateName: (x: string) => Promise<DemoSchemaType>;
   };
+
+export type DemoModelType = mongoose.Model<DemoSchemaType> & {
+  createDemo: (x: DemoTypes) => Promise<DemoSchemaType>;
+};
 
 /**Creating document template structure. */
 const DemoOptions = {
@@ -55,7 +56,10 @@ const DemoOptions = {
   },
   socketRoomId: {
     type: String,
+    unique: true,
     required: true,
+    default: () => uuidv4(),
+    immutable: true,
   },
 };
 
@@ -79,11 +83,11 @@ demoSchema.statics.createDemo = async function (data: DemoTypes) {
       _id: uuidv4(),
       demo_id: a_demo._id,
       account: uuidv4(),
-      balance: 0,
+      balance: getRandomNumber(200000, 50000000),
     });
     await new_demo_account.save();
 
-    console.log({ new_demo_account });
+    // console.log({ new_demo_account });
     return a_demo;
   } catch (error) {
     console.log("demoSchema Error - CreateDemo", { error });
@@ -96,9 +100,11 @@ demoSchema.statics.createDemo = async function (data: DemoTypes) {
  *
  * eg: This is a function that changes the age of a user.
  */
-demoSchema.method("updateAge", async function (new_age: number) {
+demoSchema.method("updateDOB", async function (new_dob: Date) {
   try {
-    this.age = new_age;
+    this.dob = new_dob;
+    const user_dob_year = this.dob.getFullYear();
+    this.age = new Date().getFullYear() - user_dob_year;
     await this.save();
     return this;
   } catch (error) {
@@ -106,17 +112,39 @@ demoSchema.method("updateAge", async function (new_age: number) {
   }
 });
 
+/**Another way to create a method function */
 demoSchema.methods.updateName = async function (new_name: string) {
   this.name = new_name;
   await this.save();
   return this;
-  //.. Another way to create a method function
 };
 
-/**Creating schema in database*/
-const Demo = MainDb.model<DemoSchemaType, DemoModelType>(
+/**Demo_User Schema
+ * @description This collection has multiple built in functions such as methods and static which help to automate procedures.
+ *
+ * @example
+ * // Using Static function which is on the Model level
+ * // This creates a new Demo_User document and save it to the database.
+ * const demo_static_result = await Demo_User.createDemo({
+        _id: "co8379ch37egcvyivevcv",
+        name: "Steve Jones",
+        age: 32,
+        dob: new Date("12/01/1992"),
+        userType: "User",
+      });
+ * await demo_static_result.updateName("John Brown");
+
+
+ * // Using a method(s) function which is on the Document level
+ * const user = await Demo_User.findOne({_id: 1});
+ * await user.updateName("John Brown");
+ *
+ *
+ *
+ */
+const Demo_User = MainDb.model<DemoSchemaType, DemoModelType>(
   collection,
   demoSchema
 );
 /**Exporting schema to be used in application */
-export default Demo;
+export default Demo_User;

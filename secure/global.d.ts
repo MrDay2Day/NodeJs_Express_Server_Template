@@ -28,6 +28,7 @@ declare global {
       REDIS_PASS: string;
       //MongoDB
       MONGO_ACTIVE: string;
+      MONGO_USE_INTERNAL_SERVER: string;
       MONGO_USE_REPLICA_SET: string;
       MONGO_REPLICA_SET_1: string;
       MONGO_URL: string;

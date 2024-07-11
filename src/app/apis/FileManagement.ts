@@ -4,6 +4,8 @@ import sharp from "sharp";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
+import { Buffer } from "buffer";
+
 // @ts-ignore
 import imagemin from "imagemin"; // Has no declaration file for this module
 // @ts-ignore
@@ -16,6 +18,9 @@ import sizeOf from "buffer-image-size";
 import B2 from "backblaze-b2";
 import { Response } from "express";
 import { checkJSONToArray } from "../utils/helpers";
+
+const max_thumbnail = 300;
+const max_image = 1000;
 
 const fileTypes = checkJSONToArray(process.env.FILE_TYPES || "");
 const imagesOnly = checkJSONToArray(process.env.IMAGES_ONLY || "");
@@ -50,13 +55,25 @@ async function GetBucket() {
 }
 GetBucket();
 
-/**
- *
- * Refactor code for document such as .doc .pdf .xlsx etc and choose their respective folders.
+/**Refactor code for document such as .doc .pdf .xlsx etc and choose their respective folders.
  */
-
 class Worker {
-  static resizeImage = async (file: any, size: any) => {
+  static async addWatermark(imageBuffer: Buffer, watermarkText: string) {
+    const image = sharp(imageBuffer);
+
+    const { width, height } = await image.metadata();
+
+    const svgOverlay = `
+<svg width="${width || 0}" height="${height || 0}">
+<text x="98%" y="98%" font-family="Verdana" font-weight="bold" font-size="20" fill="#e8e8e8" text-anchor="end" alignment-baseline="middle" opacity="0.7">${watermarkText}</text>
+</svg>
+    `;
+
+    return image
+      .composite([{ input: Buffer.from(svgOverlay), gravity: "center" }])
+      .toBuffer();
+  }
+  static resizeImage = async (file: Buffer, size: number) => {
     return new Promise((resolve, reject) => {
       const dimensions = sizeOf(file);
       let height = null,
@@ -85,23 +102,27 @@ class Worker {
           // background: { r: 255, g: 255, b: 255, alpha: 0 },
         })
         .toBuffer()
-        .then(async (buffer: any) => {
-          const file = await imagemin.buffer(buffer, {
+        .then(async (buffer: Buffer) => {
+          const file = (await imagemin.buffer(buffer, {
             plugins: [
               imageminJpegRecompress({
                 accurate: true,
                 method: "ssim",
+                quality: "low",
+                max: 70,
               }),
               imageminJpegtran({
                 progressive: true,
               }),
               imageminPngquant({
-                dithering: false,
+                dithering: 1,
+                strip: true,
                 speed: 1,
-                quality: [0.8, 0.8],
+                quality: [0.3, 0.3],
               }),
             ],
-          });
+          })) as Buffer;
+
           resolve(file);
         })
         .catch((err: any) => {
@@ -178,7 +199,11 @@ class Worker {
       }
 
       if (imagesOnly.includes(type)) {
-        resizedImage = await this.resizeImage(source, 2000);
+        resizedImage = (await this.resizeImage(source, max_image)) as Buffer;
+        resizedImage = await this.addWatermark(
+          resizedImage,
+          process.env.APP_NAME
+        );
       }
 
       let uploadRegularData = {};
@@ -195,7 +220,7 @@ class Worker {
       );
 
       if (imagesOnly.includes(type)) {
-        const thumbnail = await this.resizeImage(source, 200);
+        const thumbnail = await this.resizeImage(source, max_thumbnail);
         uploadThumbnailData = await this.uploadNow(
           uploadUrl,
           uploadAuthorizationToken,
@@ -331,41 +356,41 @@ class FileManagement {
       return { err };
     }
   };
-}
 
-export async function fetchFile({
-  contentType,
-  fileName,
-  res,
-}: {
-  contentType: string;
-  fileName: string;
-  res: Response;
-}) {
-  try {
-    if (!process.env.FILE_UP_DOWN) {
-      throw { msg: "File fetch disabled.", code: "BB0000001" };
+  static async fetchFile({
+    contentType,
+    fileName,
+    res,
+  }: {
+    contentType: string;
+    fileName: string;
+    res: Response;
+  }) {
+    try {
+      if (!process.env.FILE_UP_DOWN) {
+        throw { msg: "File fetch disabled.", code: "BB0000001" };
+      }
+
+      var fileToSend = await b2_private.downloadFileByName({
+        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
+        fileName,
+        // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
+        responseType: "arraybuffer",
+      });
+
+      res
+        .status(200)
+        .setHeader("Content-Type", contentType)
+        .send(fileToSend.data);
+    } catch (err: any | unknown) {
+      res.status(400).json({
+        valid: false,
+        err: {
+          msg: err.msg || "Something went wrong, please try again.",
+          Code: err.code || "BB0000003",
+        },
+      });
     }
-
-    var fileToSend = await b2_private.downloadFileByName({
-      bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
-      fileName,
-      // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
-      responseType: "arraybuffer",
-    });
-
-    res
-      .status(200)
-      .setHeader("Content-Type", contentType)
-      .send(fileToSend.data);
-  } catch (err: any | unknown) {
-    res.status(400).json({
-      valid: false,
-      err: {
-        msg: err.msg || "Something went wrong, please try again.",
-        Code: err.code || "BB0000003",
-      },
-    });
   }
 }
 

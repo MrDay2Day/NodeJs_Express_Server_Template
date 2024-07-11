@@ -5,9 +5,6 @@
   "main": "server.js",
   "scripts": {
     "start": "node code/src/server.js",
-    "start:server": "pm2 start code/src/server.js --watch",
-    "start:dev_1": "npx tsc && supervisor -e js,json,env,html,css code/index.js",
-    "dev_": "tsc-watch --onSuccess \"nodemon code/src/server.js\"",
     "tsc": "tsc-watch",
     "node": "nodemon code/src/server.js",
     "dev": "npm-run-all --parallel tsc node"
@@ -46,7 +43,7 @@
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "imagemin": "7.0.0",
-    "imagemin-jpeg-recompress": "^7.1.0",
+    "imagemin-jpeg-recompress": "7.1.0",
     "imagemin-jpegtran": "7.0.0",
     "imagemin-pngquant": "9.0.2",
     "jsonwebtoken": "^9.0.0",

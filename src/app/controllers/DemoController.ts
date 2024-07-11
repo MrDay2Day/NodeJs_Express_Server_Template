@@ -25,10 +25,13 @@ import { query_pg } from "../../config/postgres/config";
 import { connect_sql } from "../../config/mysql/config";
 import { QueryResult } from "mysql2/promise";
 
-// To use MongoDB Database simply import Schema for collection from the 'models/database/mongodb/schemas**'
-import Demo from "../models/database/mongo/schemas/Demo";
+/**
+ * To use MongoDB Database simply import Schema for collection from the 'models/database/mongodb/schemas**'
+ *
+ */
+import Demo_User from "../models/database/mongo/schemas/Demo_User";
 
-// To use socket connection
+/**To use socket connection */
 import { getIO } from "../../utils/socket";
 /**
  *  Examples use of SocketIO websocket
@@ -41,10 +44,10 @@ io.to(<SOCKET_ID | SOCKET_ROOM>).emit("<listener>", data);
 // Handling multipart/form-data inside the controller
 import { multer_single_image, UploadedFileType } from "../../middleware/multer";
 import multer from "multer";
-import FileManagement, { fetchFile } from "../apis/FileManagement";
+import FileManagement from "../apis/FileManagement";
 // Sample Upload Data
 import { demo_image_file, excel_file } from "./file_info";
-import { getRandomNumber } from "../utils/helpers";
+import { DemoClassSQL } from "../models/global/demo_mysql";
 
 function generate_user() {
   const demo_user = {
@@ -70,7 +73,7 @@ function generate_user() {
 }
 
 class DemoController {
-  // Demo handling post request
+  /**Demo handling post request */
   static async no_auth_demo(req: Request, res: Response, next: NextFunction) {
     try {
       const { number } = req.body as { number?: number };
@@ -92,7 +95,7 @@ class DemoController {
     }
   }
 
-  // Demo handling get request
+  /**Demo handling get request */
   static async auth_demo(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req);
@@ -118,7 +121,7 @@ class DemoController {
     }
   }
 
-  // Demo controller to handle file upload using multer before the controller
+  /**Demo controller to handle file upload using multer before the controller */
   static async handle_file_1(req: Request, res: Response, next: NextFunction) {
     try {
       const { files, file } = req as {
@@ -156,9 +159,9 @@ class DemoController {
     }
   }
 
-  // Here we use multer to handle multipart/form-data in the controller for a more custom experience, here we can deliver a custom error message or handle errors in another manor.
+  /**Here we use multer to handle multipart/form-data in the controller for a more custom experience, here we can deliver a custom error message or handle errors in another manor. */
   static async handle_file_2(req: Request, res: Response, next: NextFunction) {
-    multer_single_image(req, res, function (error) {
+    multer_single_image(req, res, async function (error) {
       try {
         if (error instanceof multer.MulterError) {
           console.log("Multer Error", { error });
@@ -176,8 +179,17 @@ class DemoController {
 
         console.log({ files, file, demo, name });
 
-        return res.status(200).json({ valid: true, route: "handle_file" });
+        const file_data = await FileManagement.upload(
+          "image", // "document" | "image" | (Optional: "profileImage")
+          "1234567890abcdefg",
+          file
+        );
+
+        return res
+          .status(200)
+          .json({ valid: true, route: "handle_file", file_data });
       } catch (error: ErrorType) {
+        console.log("handle_file_2", { error });
         return res.status(200).json({
           valid: false,
           code: "DEMO000003B",
@@ -187,11 +199,29 @@ class DemoController {
     });
   }
 
-  /*
+  /**
   Demo of fetching a file securely and serving to frontend from Backblaze S3 whether it an image or file.
   */
   static async fetch_file(req: Request, res: Response, next: NextFunction) {
     try {
+      /**When you need to pass a forward slash (`/`) in a URL as part of a string, you should encode it to ensure it is correctly interpreted as part of the query string or path parameter. The encoded value for a forward slash is `%2F`. 
+       * 
+       * Example: 
+            const myString = 'hello/world';
+            const encodedString = encodeURIComponent(myString);
+            const url = `https://example.com/path?param=${encodedString}`;
+
+            const decodedString = decodeURIComponent(encodedString); // -> 'hello/world'
+       * 
+       * 
+      */
+      const { content_type, type, file_name } = req.params as {
+        content_type: string | undefined;
+        type: string | undefined;
+        file_name: string | undefined;
+      };
+
+      console.log({ content_type, type, file_name });
       // This is the information that needed to fetch the file
 
       /**
@@ -199,9 +229,9 @@ class DemoController {
        
        NB: For images ONLY you get "uploadThumbnailData" AND "uploadRegularData" while every other file type ONLY has "uploadRegularData"
        *  */
-      return await fetchFile({
-        fileName: demo_image_file.uploadRegularData.fileName,
-        contentType: demo_image_file.uploadRegularData.contentType,
+      return await FileManagement.fetchFile({
+        fileName: `${type}/${file_name}`,
+        contentType: `${content_type}`,
         res,
       });
     } catch (error: ErrorType) {
@@ -213,7 +243,7 @@ class DemoController {
     }
   }
 
-  // Demo handling url queries
+  /**Demo handling url queries */
   static async handle_queries(req: Request, res: Response, next: NextFunction) {
     const { a, b, c } = req.query as {
       a: string | undefined;
@@ -224,7 +254,7 @@ class DemoController {
     return res.status(200).json({ a, b, c });
   }
 
-  // Demo handling url params
+  /**Demo handling url params */
   static async handle_params(req: Request, res: Response, next: NextFunction) {
     const { x, y, z } = req.params as {
       x: string | undefined;
@@ -235,7 +265,7 @@ class DemoController {
     return res.status(200).json({ x, y, z });
   }
 
-  // Example Inserting user into MySQL Database
+  /**Example Inserting user into MySQL Database */
   static async create_user_mysql(
     req: Request,
     res: Response,
@@ -269,20 +299,32 @@ class DemoController {
         info.insertId,
         /**Here we assigned the 'SelectDemoUserType' so we know the types of the data that should be returned*/
       ])) as SelectDemoUserType[];
+      sql.end();
+
+      const userClassStaticFetch = await DemoClassSQL.fromQuery(
+        query_res[0]._id
+      );
 
       /**Validating if there is a result */
       if (query_res.length <= 0)
         throw { msg: "User not found", code: "QUY0000001" };
 
       /**The user info is pull which is the 'DemoTypes' which is in an array */
-      const user = query_res[0];
+      const userObj = new DemoClassSQL(
+        query_res[0]._id,
+        query_res[0].name,
+        query_res[0].age,
+        query_res[0].dob,
+        query_res[0].userType,
+        socketRoomId
+      );
+      console.log({ userClassStaticFetch, userObj });
+      await userObj.updateDOB(faker.date.birthdate());
+      console.log({ userObj });
 
       /**Close SQL connection*/
-      sql.end();
 
-      return res
-        .status(200)
-        .json({ data: { ...user, socketRoomId }, valid: true });
+      return res.status(200).json({ data: userObj.returnData(), valid: true });
     } catch (error: ErrorType) {
       console.log({ error });
       return res.status(200).json({
@@ -293,7 +335,9 @@ class DemoController {
     }
   }
 
-  // Example Inserting user into PostGres Database "Demo" and insert "DemoSocketRoomId"
+  /**
+   * Example Inserting user into PostGres Database "Demo" and insert "DemoSocketRoomId"
+   */
   static async create_user_postgres(
     req: Request,
     res: Response,
@@ -329,7 +373,9 @@ class DemoController {
     }
   }
 
-  // Example Inserting user into MySQL Database "Demo" and insert "DemoSocketRoomId"
+  /**
+   * Example Inserting user into MySQL Database "Demo" and insert "DemoSocketRoomId"
+   */
   static async create_user_mongo(
     req: Request,
     res: Response,
@@ -337,36 +383,37 @@ class DemoController {
   ) {
     try {
       /**We generate a random user. */
-      const demo_user = generate_user();
       const demo_user_1 = generate_user();
 
       /**Using the predefined Schema Static function */
-      const demo_static_result = await Demo.createDemo({
+      const demo_static_result = await Demo_User.createDemo({
         _id: demo_user_1.userId,
         name: demo_user_1.full_name,
         age: demo_user_1.age,
         dob: demo_user_1.dob,
         userType: demo_user_1.userType,
-        socketRoomId: uuidv4(),
       });
-      console.log({ demo_static_result });
+      // console.log({ demo_static_result });
 
-      /**Create a 'Demo' document with the user info from 'demo_user' */
-      const data = new Demo({
-        _id: demo_user.userId,
-        name: demo_user.full_name,
-        age: demo_user.age,
-        dob: demo_user.dob,
-        userType: demo_user.userType,
-        socketRoomId: uuidv4(),
-      });
-      /**Saving new Document to Database */
-      await data.save();
+      /**Create a 'Demo' document with the user info from 'demo_user' 
+       * 
+          const demo_user = generate_user();
+          
+          const data = new Demo_User({
+            _id: demo_user.userId,
+            name: demo_user.full_name,
+            age: demo_user.age,
+            dob: demo_user.dob,
+            userType: demo_user.userType,
+          });
+          
+          await data.save();
+      */
 
       /**We use the method function the change the ago with ease without using 'updateOne' etc. ensure to use the 'await' flag. */
-      await data.updateAge(getRandomNumber(23, 67));
+      await demo_static_result.updateDOB(faker.date.birthdate());
 
-      return res.status(200).json({ data, valid: true });
+      return res.status(200).json({ demo_static_result, valid: true });
     } catch (error: ErrorType) {
       console.log({ error });
       return res.status(200).json({

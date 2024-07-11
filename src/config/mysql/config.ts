@@ -35,23 +35,48 @@ export const sql_pool = async function (configuration: MySQLConnectionType) {
   return await sql_promise.createConnection(configuration);
 };
 
+/**To access SQL server
+ * @description This is a async function that allows queries and more to the database
+ * @example
+ * const sql = await connect_sql();
+ *
+ * const [query_res] = (await sql.query(
+ *  `select * from demo where id = ?`,
+ *  [ 23, ])
+ * ) as {
+ *  name: string;
+ *  age: number,
+ *  id: number;
+ * }
+ *
+ * const demo = query_res[0];
+ *
+ * sql.end();
+ */
 export const connect_sql = async function () {
   return await sql_promise.createConnection(
     mysql_connection_data_with_database
   );
 };
 
-export function ConnectMySQL() {
+export function ConnectMySQL(): Promise<{
+  valid: Boolean;
+  [key: string]: any;
+}> {
   console.log(text_bright_magenta("\tCONNECTING TO MYSQL DATABASE..."));
   return new Promise(async function (resolve, reject) {
-    await checkAndCreateMySQLDatabase();
-    let my_sql_access = await sql_pool(mysql_connection_data_with_database);
+    try {
+      await checkAndCreateMySQLDatabase();
+      let my_sql_access = await sql_pool(mysql_connection_data_with_database);
 
-    await createMySQLTables(my_sql_access);
-    const data = await my_sql_access.connect();
-    my_sql_access.end();
+      await createMySQLTables(my_sql_access);
+      const data = await my_sql_access.connect();
+      my_sql_access.end();
 
-    console.log(text_bright_magenta("\tMYSQL DATABASE CONNECTED!\n"));
-    resolve(data);
+      console.log(text_bright_magenta("\tMYSQL DATABASE CONNECTED!\n"));
+      resolve({ valid: true, data });
+    } catch (error) {
+      resolve({ valid: false, error });
+    }
   });
 }

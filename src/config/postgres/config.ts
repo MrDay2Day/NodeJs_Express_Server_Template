@@ -39,7 +39,10 @@ export const query_pg = async function (
   return await pg_conn.query(query, params);
 };
 
-export function ConnectPostGres() {
+export function ConnectPostGres(): Promise<{
+  valid: Boolean;
+  [key: string]: any;
+}> {
   console.log(text_bright_yellow("\tCONNECTING TO POSTGRES DATABASE..."));
   return new Promise(async function (resolve, reject) {
     try {
@@ -48,10 +51,10 @@ export function ConnectPostGres() {
       await createPGTables();
       console.log(text_bright_yellow("\tPOSTGRES DATABASE CONNECTED!\n"));
 
-      resolve(true);
+      resolve({ valid: true });
     } catch (error) {
       console.log({ error });
-      reject(error);
+      reject({ valid: false, error });
     }
   });
 }

@@ -106,49 +106,49 @@ const excelOnly = (req: Request, file: UploadedFileType, callback: any) => {
 
 // Multer Middleware
 
-// Use to Accept Form data with no file => file<UploadedFileType>
+/**Use to Accept Form data with no file => file<UploadedFileType> */
 export const multer_text = multer({
   limits,
   storage,
 }).none();
 
-// Avoid using this as it allows any and all => files<UploadedFileType[]>
+/**Avoid using this as it allows any and all => files<UploadedFileType[]> */
 export const multer_any = multer({
   limits,
   storage,
 }).any();
 
-// Single Image => file<UploadedFileType>
+/**Single Image => file<UploadedFileType>*/
 export const multer_single_image = multer({
   limits,
   storage,
   fileFilter: imageFileTypes,
 }).single("singleImage");
-// Accept multiple images you can set the limit, default: 20 => files<UploadedFileType[]>
+/**Accept multiple images you can set the limit, default: 20 => files<UploadedFileType[]>*/
 export const multer_multi_image = multer({
   limits,
   storage,
   fileFilter: imageFileTypes,
 }).fields([{ name: "multiImage", maxCount: 20 }]);
-// Accept multiple document types at once, default: 20 => files<UploadedFileType[]>
+/**Accept multiple document types at once, default: 20 => files<UploadedFileType[]>*/
 export const multer_multi_file = multer({
   limits,
   storage,
   fileFilter: documentFileType,
 }).fields([{ name: "multiDocuments", maxCount: 10 }]);
-// Accept only a single document=> file<UploadedFileType>
+/**Accept only a single document=> file<UploadedFileType>*/
 export const multer_single_files = multer({
   limits,
   storage,
   fileFilter: documentFileType,
 }).single("singleDocument");
-// Accept multiple JSON files default: 1 => files<UploadedFileType[]>
+/**Accept multiple JSON files default: 1 => files<UploadedFileType[]>*/
 export const multer_json_files = multer({
   limits,
   storage,
   fileFilter: jsonFileType,
 }).fields([{ name: "jsonFile", maxCount: 1 }]);
-// Accept a single excel or csv file => file<UploadedFileType>
+/**Accept a single excel or csv file => file<UploadedFileType>*/
 export const multer_excel = multer({
   limits,
   storage,

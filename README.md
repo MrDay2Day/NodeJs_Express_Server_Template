@@ -16,13 +16,13 @@ Node Version: [**v18.19.0**](https://nodejs.org/en/download/package-manager)
 
 **Short answer:** A Boilerplate NodeJS Express Server Template written in Typescript built for scale!
 
-**A little more explanation:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & ~~`Redis`~~ **->** `KeyDB`. This _template_ is design to operate at scale using ~~`Redis`~~ **->** `KeyDB` and can easily be deployed as a node cluster or/and on separate machines locally or/and globally.
+**The not so short answer:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & ~~`Redis`~~ **->** `KeyDB`. This _template_ is design to operate at scale using ~~`Redis`~~ **->** `KeyDB` and can easily be deployed as a node cluster or/and on separate machines locally or/and globally.
 
 This template has built-in file management using `S3` _(Simple Storage Service)_ protocol and an emailing engine that can send raw `html` emails with **attachments** through `AWS SES` _(Simple Emailing Service)_.
 
 **NB:**_There is also a unique authorization method which I personally use which tags all machines with a unique id stored in a cookie that make a request to server so you are able to have some sense of the devices used by your users and is also very helpful when it comes to security and usage patterns for users._
 
-### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to clone, edit and distribute as you see fit with any changes or no changes.**
+### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to make changes as you see fit.**
 
 ## What did I build **Repo**?
 
@@ -53,7 +53,7 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 
 ---
 
-## Why recommend **KeyDB** > Redis
+## Why recommend **KeyDB** > Redis🖕🏿
 
 Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub.
 <img src="secure/ops.png" width="700"/>
@@ -97,17 +97,17 @@ These are features & technologies that may or may not be integrated in the futur
 
 **Stages 👇🏿**
 
-✅ Completed  
-➡️ In Progress  
-✏️ Planning  
-💭 Considering  
-⚠️ Issue  
-❌ Cancelled
+👉🏿 ✅ Completed  
+👉🏿 ➡️ In Progress  
+👉🏿 ✏️ Planning  
+👉🏿 💭 Considering  
+👉🏿 ⚠️ Issue  
+👉🏿 ❌ Cancelled
 
 **Implementation Style 👇🏿**  
-💡 Custom Implementation _(All Custom implementations are accompanied with documentation and examples)_
-🕯️ Standard/Traditional Implementation
-❓ Not Sure
+👉🏿 💡 Custom Implementation _(All Custom implementations are accompanied by documentation and examples)_  
+👉🏿 🕯️ Standard/Traditional Implementation  
+👉🏿 ❓ Not Sure
 
 **Current List**
 
@@ -118,7 +118,8 @@ These are features & technologies that may or may not be integrated in the futur
 - ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**)💡
 - ✅ Multer💡
 - ✅ Backblaze💡
-- ✏️ Docker🕯️
+- ✏️ Dockerize🕯️
+- ✏️ Custom Task Queue🕯️
 - ✅ AWS💡
 - ⚠️ tRCP❓
 - 💭 GraphQL❓

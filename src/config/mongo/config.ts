@@ -24,10 +24,13 @@ export const MONGOOSE_OPTIONS = {
 
 export const schemas: string[] = [];
 
-export function ConnectMongoDB() {
+export function ConnectMongoDB(): Promise<{
+  valid: Boolean;
+  [key: string]: any;
+}> {
   console.log(text_bright_cyan("\tCONNECTING TO MONGODB DATABASE..."));
   return new Promise(async function (resolve, reject) {
-    const is_dev = process.env.NODE_ENV === "dev";
+    const is_dev = process.env.MONGO_USE_INTERNAL_SERVER;
 
     const dev_server = is_dev
       ? await MongoMemoryReplSet.create({
@@ -77,11 +80,11 @@ export function ConnectMongoDB() {
         console.log(text_bright_cyan("\tMONGODB DATABASE CONNECTED!\n"));
 
         if (process.env.MONGO_USE_REPLICA_SET) MongoMainListener();
-        resolve(data);
+        resolve({ valid: true, data });
       })
       .catch((mongoErr: any) => {
         console.log({ mongoErr });
-        reject(mongoErr);
+        reject({ valid: false, mongoErr });
       });
   });
 }

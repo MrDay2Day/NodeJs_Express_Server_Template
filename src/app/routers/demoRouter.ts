@@ -25,6 +25,7 @@ demoRouter.post(
   DemoController.auth_demo
 );
 
+///////////////     File Handling    ///////////////////////
 /**
  * Backblaze S3 Storage was used in this project because off its flexibility and cost compared to AWS S3 which is significantly more expensive as it relates to storage and egress.
  * 
@@ -40,9 +41,12 @@ demoRouter.post(
 // Using middleware in the controller itself and not the route
 demoRouter.post("/file--single-image", DemoController.handle_file_2);
 // Fetching files from S3 storage
-demoRouter.get("/fetch-file", DemoController.fetch_file);
+demoRouter.get(
+  "/fetch-file/:content_type/:type/:file_name",
+  DemoController.fetch_file
+);
 
-//////////////////////////////////////////////////////////////
+///////////////     Query & Params    ///////////////////////
 
 /**
 Handling URL queries
@@ -55,7 +59,7 @@ Handling URL params
  */
 demoRouter.get("/params/:x/:y/:z", DemoController.handle_params);
 
-//////////////////////////////////////////////////////////////
+///////////////     Database Actions    ///////////////////////
 // MySQL
 demoRouter.get("/create-mysql", DemoController.create_user_mysql);
 // MongoDB

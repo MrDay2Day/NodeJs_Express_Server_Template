@@ -68,25 +68,9 @@ export async function init(httpServer: http.Server) {
   return io;
 }
 
-export async function getIO() {
-  if (!io) {
-    throw new Error("Socket.io not initialized!");
-  }
-  console.log("SOCKET.IO INITIALIZED!");
-  return io;
-}
-
-export async function redisServer() {
-  if (process.env.USE_REDIS === "y") {
-    return pubClient?.duplicate();
-  } else {
-    return false;
-  }
-}
-
-/**
- * To use io
- * const { getIO } = require("../socket");
+/**To get Access to Web socket
+  * To use io
+ * @example const { getIO } = require("../socket");
  * 
  * => Server Side
  * 
@@ -113,3 +97,18 @@ export async function redisServer() {
         }
       });
  */
+export async function getIO() {
+  if (!io) {
+    throw new Error("Socket.io not initialized!");
+  }
+  console.log("SOCKET.IO INITIALIZED!");
+  return io;
+}
+
+export async function redisServer() {
+  if (process.env.USE_REDIS === "y") {
+    return pubClient?.duplicate();
+  } else {
+    return false;
+  }
+}
