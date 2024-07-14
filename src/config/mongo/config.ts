@@ -1,23 +1,16 @@
 // Mongoose options
 
-import mongoose from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import path from "path";
 import { MongoMainListener } from "../../app/models/database/mongo/listener/listeners";
-import { MongoMemoryReplSet, MongoMemoryServer } from "mongodb-memory-server";
-import {
-  text_bright_cyan,
-  text_cyan,
-  text_yellow,
-} from "../../utils/serverDataInfo";
+import { MongoMemoryReplSet } from "mongodb-memory-server";
+import { text_bright_cyan, text_cyan } from "../../utils/serverDataInfo";
 
-export const MONGOOSE_OPTIONS = {
-  // mongos: true,
-  // poolSize: 10,
-  socketTimeoutMS: 10000,
-  serverSelectionTimeoutMS: 5000,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  // useCreateIndex: true,
+export const MONGOOSE_OPTIONS: ConnectOptions = {
+  // socketTimeoutMS: 10000,
+  // serverSelectionTimeoutMS: 5000,
+  readPreference: mongoose.mongo.ReadPreference.PRIMARY,
+  dbName: process.env.MONGO_DEFAULT_DATABASE,
   noDelay: true,
   retryWrites: true,
 };
@@ -79,7 +72,7 @@ export function ConnectMongoDB(): Promise<{
         );
         console.log(text_bright_cyan("\tMONGODB DATABASE CONNECTED!\n"));
 
-        if (process.env.MONGO_USE_REPLICA_SET) MongoMainListener();
+        // if (process.env.MONGO_USE_REPLICA_SET) MongoMainListener();
         resolve({ valid: true, data });
       })
       .catch((mongoErr: any) => {

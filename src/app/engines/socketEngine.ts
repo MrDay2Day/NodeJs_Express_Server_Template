@@ -12,8 +12,26 @@ import { v4 as uuidv4 } from "uuid";
 
   When sending any message use the user's "id". When the message is sent to the user's "id" fetch the user's "socket_room_id" and then send message to that room.
 
+  @function listenerFunc 
+  @description The default listeners for each socket connection.
+  
+  @function joinSocketRoom 
+  @description To add socket connection to user's socket room.
+  
+  @function validate_socket 
+  @description To validate each socket connection.
+  
+
  */
 export default class SocketEngine {
+  /**
+   * Socket Listening Procedure
+   *
+   * @param {Socket} socket Socket connection.
+   * @param {Request} request The Request connection that came with the socket connection.
+   * @param {string} serverInstanceId The server instance ID which is unique to each instance of the server
+   *
+   */
   static async listenerFunc(
     socket: Socket,
     request: http.IncomingMessage,
@@ -29,7 +47,7 @@ export default class SocketEngine {
       try {
         const io = await getIO();
         /**This function should be used to validate socket connection that it is associated with a valid user. */
-        await validate_socket(socket);
+        await this.validate_socket(socket);
         console.log("Received PING data:", {
           data,
         });
@@ -48,7 +66,7 @@ export default class SocketEngine {
     socket.on("demo", async (data, callback) => {
       try {
         /**This function should be used to validate socket connection that it is associated with a valid user. */
-        await validate_socket(socket);
+        await this.validate_socket(socket);
         console.log("Received Demo data:", {
           data,
         });
@@ -61,7 +79,17 @@ export default class SocketEngine {
     });
   }
 
-  static async joinSocketRoom(socketRoom: string, socketId: string) {
+  /**
+   *
+   * @param {string} socketRoom The unique socket room id for each user.
+   * @param {string} socketId The new socket connection ID to be added to the socket room.
+   *
+   * @returns {Promise<Boolean>} Returns a promise true | false if the socket was added to the socket room.
+   */
+  static async joinSocketRoom(
+    socketRoom: string,
+    socketId: string
+  ): Promise<Boolean> {
     try {
       console.log({ socketRoom, socketId });
       /** Establishing SocketIO Server Access */
@@ -100,17 +128,27 @@ export default class SocketEngine {
       throw err;
     }
   }
-}
 
-/**
-  Validate socket connection with "socket_room_id" method.
+  /**
+   * Validate socket connection with "socket_room_id" method.
+   *
+   * When a socket is sending a message you SHOULD send the user's id when the event is triggered fetch the user info which will include the user's "socket_room_id" then check if that "socket.id" from the socket connection is in the user's private socket room, if it is then the message can be sent else throw an error.
+   *
+   * @param {string} socket The socket connection to validate if it belongs to a verified user.
+   * @returns {Promise<Boolean>} Returns a promise true | false if the connection is valid.
+   */
+  static async validate_socket(socket: Socket): Promise<Boolean> {
+    try {
+      const socket_id = socket.id;
 
-  When a socket is sending a message you SHOULD send the user's id when the event is triggered fetch the user info which will include the user's "socket_room_id" then check if that "socket.id" from the socket connection is in the user's private socket room, if it is then the message can be sent else throw an error.
- */
-async function validate_socket(socket: Socket) {
-  const socket_id = socket.id;
+      if (!socket_id) {
+        throw new Error("Not Authenticated.");
+      }
 
-  if (!socket_id) {
-    throw new Error("Not Authenticated.");
+      return true;
+    } catch (error) {
+      console.log({ error });
+      return false;
+    }
   }
 }

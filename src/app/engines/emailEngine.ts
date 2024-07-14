@@ -2,8 +2,9 @@ import nodemailer from "nodemailer";
 import { SESClient } from "@aws-sdk/client-ses";
 import path from "path";
 import fs from "fs";
-import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+
+import moment from "moment";
 
 const ses = new SESClient({
   region: process.env.AWS_REGION,
@@ -17,8 +18,7 @@ const transporter = nodemailer.createTransport({
   SES: { ses, aws: SESClient },
 });
 
-// Based on AWS send limit email will be queued for x time until they can be sent and the queue will automatically be cleared out in a first come first server order.
-
+/**Based on AWS send limit email will be queued for x time until they can be sent and the queue will automatically be cleared out in a first come first server order. */
 const queueLimit = parseInt(process.env.AWS_SES_SEND_LIMIT_PER_SEC);
 const waitLimit = parseInt(process.env.AWS_SES_QUEUE_WAIT_TIME);
 let count = 0,
@@ -28,10 +28,24 @@ interface queueObj {
   [key: string]: unknown | any;
 }
 let queue: Array<any | { [key: string]: any | queueObj }> = [];
-// const msgsSent = [];
 let timeOutFunc: any = null;
 
+/**The emailing engine for a saas server, this send email raw HTML email and attachments via AWS SES.*/
 class EmailEngine {
+  /**
+   * Sends an email using the provided data. If the email send limit is reached, adds the email to a queue.
+   *
+   * @param {Object} params - The parameters for sending an email.
+   * @param {string} params.companyName - The name of the company.
+   * @param {string} params.shortName - The short name of the company.
+   * @param {string} params.email - The recipient's email address.
+   * @param {string} params.replyEmail - The reply-to email address.
+   * @param {string} params.template - The email template name.
+   * @param {string} params.subject - The email subject.
+   * @param {Object} params.data - The data to be injected into the email template.
+   * @param {boolean} [params.push=true] - Whether to push the email to the queue if the send limit is reached.
+   * @returns {Promise<{ [key: string]: any }>} - A promise that resolves with the email sending response.
+   */
   static sendEmail = ({
     companyName,
     shortName,
@@ -50,7 +64,7 @@ class EmailEngine {
     subject: string;
     data: Record<string, any>;
     push?: boolean;
-  }) => {
+  }): Promise<{ [key: string]: any }> => {
     return new Promise(async (resolve, reject) => {
       try {
         const email_data = {
@@ -119,6 +133,18 @@ class EmailEngine {
 }
 
 class HelperFunctions {
+  /**
+   * Sends an email using AWS SES with the provided data.
+   *
+   * @param {Object} params - The parameters for sending an email.
+   * @param {string} params.email - The recipient's email address.
+   * @param {string} params.replyEmail - The reply-to email address.
+   * @param {string} params.subject - The email subject.
+   * @param {Object} params.data - The data to be injected into the email template.
+   * @param {string} params.template - The email template name.
+   * @param {string} params.id - The unique ID for the email.
+   * @returns {Promise<any>} - A promise that resolves with the email sending response.
+   */
   static AWS_SEND = async ({
     email, // person@gmail.com
     replyEmail, // hr@hiltonhavana.com
@@ -133,7 +159,7 @@ class HelperFunctions {
     data: Record<string, any>;
     template: string;
     id: string;
-  }) => {
+  }): Promise<{ valid: Boolean; [key: string]: any }> => {
     return new Promise(async (resolve, reject) => {
       try {
         const htmlCode = fs
@@ -243,6 +269,10 @@ class HelperFunctions {
       }
     });
   };
+
+  /**
+   * Triggers the sending of queued emails up to the queue limit.
+   */
   static trigger = async () => {
     timeOutFunc ? clearTimeout(timeOutFunc) : null;
     for (let i = 0; i < queueLimit; i++) {
