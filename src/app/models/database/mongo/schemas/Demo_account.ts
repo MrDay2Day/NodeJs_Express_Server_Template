@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
 
@@ -24,30 +25,41 @@ export type DemoAccountSchemaType = Document &
     updateBalance: (x: number) => Promise<DemoAccountSchemaType>;
   };
 
-/**Creating document template structure. */
-const DemoAccountOptions = {
-  _id: {
-    type: String,
-    required: true,
-  },
-  demo_id: {
-    type: String,
-    required: true,
-    ref: "Demo",
-  },
-  account: {
-    type: String,
-    required: true,
-  },
-  balance: {
-    type: Number,
-    required: true,
-  },
-};
-
 /** creating a mongodb  */
 const demoAccountSchema = new Schema<DemoAccountSchemaType>(
-  DemoAccountOptions,
+  {
+    _id: {
+      type: String,
+      required: true,
+      default: () => uuidv4(),
+      immutable: true,
+    },
+    demo_id: {
+      type: String,
+      required: true,
+      ref: "Demo_User",
+      // validate: {
+      //   validator: async function (value: string) {
+      //     // Check if the referenced Demo_User exists
+      //     const user = await Demo_User.findById(value);
+      //     return !!user;
+      //   },
+      //   message: (props: { value: string }) =>
+      //     `Demo_User with id ${props.value} does not exist`,
+      // },
+    },
+    account: {
+      type: String,
+      required: true,
+      default: () => uuidv4(),
+      immutable: true,
+    },
+    balance: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
   {
     /**Added timestamp 'createAt' and 'updatedUp' */
     timestamps: true,
@@ -55,6 +67,17 @@ const demoAccountSchema = new Schema<DemoAccountSchemaType>(
     shardKey: { _id: 1 },
   }
 );
+
+// Pre-save middleware to validate the referenced demo_id
+demoAccountSchema.pre("save", async function (next) {
+  // const demoAccount = this as DemoAccountSchemaType;
+  // const user = await Demo_User.findById(demoAccount.demo_id);
+  // if (!user) {
+  //   next(new Error(`Demo_User with id ${demoAccount.demo_id} does not exist`));
+  // } else {
+  //   next();
+  // }
+});
 
 /**
  * Adding method function to streamline productivity, here we can create functions that this document will do frequently.

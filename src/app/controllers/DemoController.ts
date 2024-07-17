@@ -302,7 +302,7 @@ class DemoController {
       sql.end();
 
       const userClassStaticFetch = await DemoClassSQL.fromQuery(
-        query_res[0]._id
+        query_res[0]._id || ""
       );
 
       /**Validating if there is a result */
@@ -311,7 +311,7 @@ class DemoController {
 
       /**The user info is pull which is the 'DemoTypes' which is in an array */
       const userObj = new DemoClassSQL(
-        query_res[0]._id,
+        query_res[0]._id || "",
         query_res[0].name,
         query_res[0].age,
         query_res[0].dob,
@@ -383,15 +383,14 @@ class DemoController {
   ) {
     try {
       /**We generate a random user. */
-      const demo_user_1 = generate_user();
+      const demo_user = generate_user();
 
       /**Using the predefined Schema Static function */
       const demo_static_result = await Demo_User.createDemo({
-        _id: demo_user_1.userId,
-        name: demo_user_1.full_name,
-        age: demo_user_1.age,
-        dob: demo_user_1.dob,
-        userType: demo_user_1.userType,
+        name: demo_user.full_name,
+        age: demo_user.age,
+        dob: demo_user.dob,
+        userType: demo_user.userType,
       });
       // console.log({ demo_static_result });
 

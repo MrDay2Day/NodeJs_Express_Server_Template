@@ -5,7 +5,7 @@ export enum UserType {
 }
 
 export type DemoTypes = {
-  _id: string;
+  _id?: string;
   name: string;
   age?: number;
   dob: Date;

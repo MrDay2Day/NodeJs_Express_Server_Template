@@ -15,6 +15,7 @@ export const MONGOOSE_OPTIONS: ConnectOptions = {
   retryWrites: true,
 };
 
+/**An array of all Schemas used. */
 export const schemas: string[] = [];
 
 export function ConnectMongoDB(): Promise<{

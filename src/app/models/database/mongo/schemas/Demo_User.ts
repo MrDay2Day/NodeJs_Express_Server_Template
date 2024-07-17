@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ClientSession } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
@@ -6,7 +6,7 @@ import { MONGO_DEFAULT_DATABASE } from "../dbConnections";
 /**Mongodb Document type */
 import { Document } from "mongoose"; // Mongodb Document type
 /**Importing type for this specific collection */
-import { DemoTypes } from "../../types/Demo_Types";
+import { DemoTypes, UserType } from "../../types/Demo_Types";
 /**Importing schemas array to push this schema's name to it. */
 import { schemas } from "../../../../../config/mongo/config";
 import DemoAccount from "./Demo_account";
@@ -18,13 +18,13 @@ const Schema = mongoose.Schema;
 const collection = "Demo_User";
 /**Adding collection name to schemas array so we can keep tract of all collections*/
 schemas.push(collection);
-/**
- Creating a custom Type for the schema that includes mongoose 'Document' type. 
- */
 
+/**
+ * Creating a custom Type for the schema that includes mongoose 'Document' type.
+ * Here we can add the 'methods' to the type so it can be used with intellisense.
+ * */
 export type DemoSchemaType = Document &
   DemoTypes & {
-    /**Here we can add the 'methods' to the type so it can be used with intellisense.*/
     updateDOB: (x: Date) => Promise<DemoSchemaType>;
     updateName: (x: string) => Promise<DemoSchemaType>;
   };
@@ -33,63 +33,113 @@ export type DemoModelType = mongoose.Model<DemoSchemaType> & {
   createDemo: (x: DemoTypes) => Promise<DemoSchemaType>;
 };
 
-/**Creating document template structure. */
-const DemoOptions = {
-  _id: {
-    type: String,
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  age: {
-    type: Number,
-  },
-  dob: {
-    type: Date,
-    required: true,
-  },
-  userType: {
-    type: String,
-    required: true,
-  },
-  socketRoomId: {
-    type: String,
-    unique: true,
-    required: true,
-    default: () => uuidv4(),
-    immutable: true,
-  },
-};
-
 /** creating a mongodb  */
-const demoSchema = new Schema<DemoSchemaType>(DemoOptions, {
-  /**Added timestamp 'createAt' and 'updatedUp' */
-  timestamps: true,
-  /**Added sharded key for when database is sharded. */
-  shardKey: { _id: 1 },
+const demoSchema = new Schema<DemoSchemaType>(
+  {
+    _id: {
+      type: String,
+      required: true,
+      default: () => uuidv4(),
+      immutable: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    age: {
+      type: Number,
+    },
+    dob: {
+      type: Date,
+      required: true,
+    },
+    userType: {
+      type: String,
+      required: true,
+      enum: Object.values(UserType),
+    },
+    socketRoomId: {
+      type: String,
+      unique: true,
+      required: true,
+      default: () => uuidv4(),
+      immutable: true,
+    },
+  },
+  {
+    /**Added timestamp 'createAt' and 'updatedUp' */
+    timestamps: true,
+    /**Added sharded key for when database is sharded. */
+    shardKey: { _id: 1 },
+  }
+);
+
+/**
+ * Mongoose pre-save hook for the `demoSchema`.
+ *
+ * This function is executed asynchronously before a document is saved to the database.
+ * It provides an opportunity to perform validations, transformations, or other modifications
+ * on the document before persistence.
+ *
+ * @this {mongoose.Document} - The document being saved.
+ * @param {function(Error=): void} next - Callback function to signal completion or indicate an error.
+ *                                          Call `next()` to proceed with saving, or pass an `Error` object to abort.
+ *
+ * @example
+ * ```javascript
+ * demoSchema.pre('save', async function (next) {
+ *   // Example validation:
+ *   if (!this.name) {
+ *     return next(new Error('Name is required'));
+ *   }
+ *
+ *   // Example transformation:
+ *   this.name = this.name.toUpperCase();
+ *
+ *   next();
+ * });
+ * ```
+ *
+ * @see {@link https://mongoosejs.com/docs/middleware.html#pre} for more information and examples on Mongoose pre-save hooks and others.
+ */
+demoSchema.pre("save", async function (next) {
+  try {
+    const doc = this;
+
+    console.log({ doc });
+
+    next();
+  } catch (error) {
+    console.log({ error });
+  }
 });
 
 /**Schema Static function, used to create a new document and other function alongside creating the document
  * This example creates a 'Demo' document and also creates a 'DemoAccount' document.
  */
-demoSchema.statics.createDemo = async function (data: DemoTypes) {
+demoSchema.statics.createDemo = async function (
+  data: DemoTypes
+): Promise<DemoSchemaType> {
+  const session: ClientSession = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const a_demo = new this(data);
-    await a_demo.save();
+    const a_demo: DemoSchemaType = new this(data);
+    await a_demo.save({ session });
+
     /**Creating a new account when a user is created. */
     const new_demo_account = new DemoAccount({
-      _id: uuidv4(),
-      demo_id: a_demo._id,
-      account: uuidv4(),
+      demo_id: a_demo._id || "",
       balance: getRandomNumber(200000, 50000000),
     });
-    await new_demo_account.save();
+    await new_demo_account.save({ session });
 
-    // console.log({ new_demo_account });
+    await session.commitTransaction();
+    session.endSession();
+
     return a_demo;
   } catch (error) {
+    await session.abortTransaction();
     console.log("demoSchema Error - CreateDemo", { error });
     throw error;
   }

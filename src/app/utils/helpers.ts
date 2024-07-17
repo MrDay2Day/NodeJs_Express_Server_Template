@@ -10,8 +10,13 @@ export function checkJSONToArray(a: string) {
     return [];
   }
 }
-
-export function getRandomNumber(min: number, max: number) {
+/**
+ *
+ * @param {number} min Minimum number
+ * @param {number} max Maximum number
+ * @returns {number} A random number between
+ */
+export function getRandomNumber(min: number, max: number): number {
   const value = Math.random() * (max - min) + min;
   return parseInt(value.toFixed(0));
 }
