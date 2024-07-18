@@ -33,7 +33,7 @@ export type DemoModelType = mongoose.Model<DemoSchemaType> & {
   createDemo: (x: DemoTypes) => Promise<DemoSchemaType>;
 };
 
-/** creating a mongodb  */
+/** Creating a mongodb schema */
 const demoSchema = new Schema<DemoSchemaType>(
   {
     _id: {
@@ -102,17 +102,20 @@ const demoSchema = new Schema<DemoSchemaType>(
  *
  * @see {@link https://mongoosejs.com/docs/middleware.html#pre} for more information and examples on Mongoose pre-save hooks and others.
  */
-demoSchema.pre("save", async function (next) {
-  try {
-    const doc = this;
+demoSchema.pre(
+  "save",
+  async function (next: mongoose.CallbackWithoutResultAndOptionalError) {
+    try {
+      const doc = this as DemoSchemaType;
 
-    console.log({ doc });
+      console.log({ doc });
 
-    next();
-  } catch (error) {
-    console.log({ error });
+      next();
+    } catch (error) {
+      console.log({ error });
+    }
   }
-});
+);
 
 /**Schema Static function, used to create a new document and other function alongside creating the document
  * This example creates a 'Demo' document and also creates a 'DemoAccount' document.
@@ -150,23 +153,34 @@ demoSchema.statics.createDemo = async function (
  *
  * eg: This is a function that changes the age of a user.
  */
-demoSchema.method("updateDOB", async function (new_dob: Date) {
-  try {
-    this.dob = new_dob;
-    const user_dob_year = this.dob.getFullYear();
-    this.age = new Date().getFullYear() - user_dob_year;
-    await this.save();
-    return this;
-  } catch (error) {
-    throw error;
+demoSchema.method(
+  "updateDOB",
+  async function (new_dob: Date): Promise<DemoSchemaType> {
+    try {
+      const doc = this as DemoSchemaType;
+
+      doc.dob = new_dob;
+      const user_dob_year = doc.dob.getFullYear();
+      doc.age = new Date().getFullYear() - user_dob_year;
+      await doc.save();
+
+      return doc;
+    } catch (error) {
+      throw error;
+    }
   }
-});
+);
 
 /**Another way to create a method function */
-demoSchema.methods.updateName = async function (new_name: string) {
-  this.name = new_name;
-  await this.save();
-  return this;
+demoSchema.methods.updateName = async function (
+  new_name: string
+): Promise<DemoSchemaType> {
+  const doc = this as DemoSchemaType;
+
+  doc.name = new_name;
+  await doc.save();
+
+  return doc;
 };
 
 /**Demo_User Schema

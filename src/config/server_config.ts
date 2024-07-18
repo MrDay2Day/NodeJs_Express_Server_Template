@@ -11,11 +11,11 @@ import {
   text_bright_red,
 } from "../utils/serverDataInfo";
 
+export const serverInstanceId = String(uuidv4()).toUpperCase();
 export function start_server(
   server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
 ) {
   /**Server Instance ID is created to track all instances of the server*/
-  const serverInstanceId = String(uuidv4()).toUpperCase();
   console.log(
     `\n${text_bright_green("SERVER INSTANCE ID: ")}${text_bright(
       serverInstanceId

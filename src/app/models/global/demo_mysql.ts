@@ -114,7 +114,7 @@ export class DemoClassSQL implements DemoTypes {
       sql.end();
 
       return new DemoClassSQL(
-        query_res[0]._id,
+        query_res[0]._id || "",
         query_res[0].name,
         query_res[0].age,
         query_res[0].dob,

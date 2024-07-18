@@ -1,12 +1,9 @@
 import { createToken, createSystemToken } from "../../utils/jwt";
-import { v4 as uuidv4 } from "uuid";
-
-import mongoose from "mongoose";
-const mongo = mongoose.connection.readyState;
 import { io } from "../../../utils/socket";
 
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import DBConfiguration from "../../../config/db_config";
+import { serverInstanceId } from "../../../config/server_config";
 
 type NewReqType = Request & { userId: string };
 
@@ -30,16 +27,13 @@ class Misc {
   static ping = async (req: Request, res: Response): Promise<void> => {
     const date = new Date();
 
-    // console.log(req.cookies);
-
     type NewCookieOptions = CookieOptions & {
       production: boolean;
       date: Date;
     };
 
     const options: NewCookieOptions = {
-      // httpOnly: true,
-      // path: "/server",
+      httpOnly: process.env.NODE_ENV === "production" ? true : false,
       production: process.env.NODE_ENV === "production" ? true : false,
       secure: process.env.COOKIES_SECURE ? true : false,
       sameSite: true,
@@ -49,6 +43,7 @@ class Misc {
     try {
       if (!req.cookies.ping) {
         const pingToken = await createSystemToken({
+          serverInstanceId,
           data: new Date(Date.now()),
         });
 
@@ -60,6 +55,7 @@ class Misc {
       // Minerva System Token for authenticating devices used by user
       if (!req.cookies.systemToken) {
         const systemToken = await createSystemToken({
+          serverInstanceId,
           data: new Date(Date.now()),
         });
 
@@ -72,14 +68,15 @@ class Misc {
             ? { valid: true }
             : {
                 success: {
-                  date,
-                  server_status: true,
                   production:
                     process.env.NODE_ENV === "production" ? true : false,
+                  date,
+                  server_status: true,
+                  serverInstanceId,
                   secondary_modules: {
                     socket_status: io ? true : false,
                     redis_status: !!process.env.USE_REDIS,
-                    database_status: {
+                    active_database: {
                       mongodb: DBConfiguration.database_status().mongodb,
                       mysql: DBConfiguration.database_status().mysql,
                       postgres: DBConfiguration.database_status().postgres,
@@ -90,6 +87,8 @@ class Misc {
               }
         )
         .send();
+
+      return;
     } catch (err) {}
   };
 
@@ -114,6 +113,7 @@ class Misc {
       } else {
         throw new Error("Not valid");
       }
+      return;
     } catch (err) {
       res.json({ valid: false });
     }
@@ -138,7 +138,9 @@ class Misc {
   ): Promise<void> => {
     res.statusCode = 404;
     res.setHeader("Content-Type", "text/html");
-    res.send(`<div><h1>Page does not exist</h1></div>`);
+    res.send(`<div><h1>Endpoint does not exist.</h1></div>`);
+
+    return;
   };
 
   static sysError = async (
@@ -152,6 +154,8 @@ class Misc {
     const data = error.data;
     res.statusCode = 500;
     res.json({ err: { msg: message, data }, valid: false });
+
+    return;
   };
 }
 

@@ -70,7 +70,8 @@ const demoAccountSchema = new Schema<DemoAccountSchemaType>(
 
 // Pre-save middleware to validate the referenced demo_id
 demoAccountSchema.pre("save", async function (next) {
-  // const demoAccount = this as DemoAccountSchemaType;
+  const demoAccount = this as DemoAccountSchemaType;
+  next();
   // const user = await Demo_User.findById(demoAccount.demo_id);
   // if (!user) {
   //   next(new Error(`Demo_User with id ${demoAccount.demo_id} does not exist`));
