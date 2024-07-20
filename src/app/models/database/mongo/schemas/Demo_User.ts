@@ -40,7 +40,7 @@ const demoSchema = new Schema<DemoSchemaType>(
       type: String,
       required: true,
       default: () => uuidv4(),
-      immutable: true,
+      // immutable: true,
     },
     name: {
       type: String,
@@ -63,7 +63,7 @@ const demoSchema = new Schema<DemoSchemaType>(
       unique: true,
       required: true,
       default: () => uuidv4(),
-      immutable: true,
+      // immutable: true,
     },
   },
   {
@@ -108,7 +108,12 @@ demoSchema.pre(
     try {
       const doc = this as DemoSchemaType;
 
-      console.log({ doc });
+      if (
+        !doc.isNew &&
+        (doc.isModified("_id") || doc.isModified("createdAt"))
+      ) {
+        doc.invalidate("readOnlyField", "Certain fields cannot be modified");
+      }
 
       next();
     } catch (error) {
@@ -131,20 +136,27 @@ demoSchema.statics.createDemo = async function (
     await a_demo.save({ session });
 
     /**Creating a new account when a user is created. */
+    if (!a_demo._id) {
+      await session.abortTransaction();
+      throw new Error("Missing information.");
+    }
     const new_demo_account = new DemoAccount({
-      demo_id: a_demo._id || "",
+      demo_id: a_demo._id,
       balance: getRandomNumber(200000, 50000000),
     });
     await new_demo_account.save({ session });
 
     await session.commitTransaction();
-    session.endSession();
 
     return a_demo;
   } catch (error) {
     await session.abortTransaction();
     console.log("demoSchema Error - CreateDemo", { error });
     throw error;
+  } finally {
+    if (!session.hasEnded) {
+      session.endSession();
+    }
   }
 };
 

@@ -7,8 +7,6 @@ import { MongoMemoryReplSet } from "mongodb-memory-server";
 import { text_bright_cyan, text_cyan } from "../../utils/serverDataInfo";
 
 export const MONGOOSE_OPTIONS: ConnectOptions = {
-  // socketTimeoutMS: 10000,
-  // serverSelectionTimeoutMS: 5000,
   readPreference: mongoose.mongo.ReadPreference.PRIMARY,
   dbName: process.env.MONGO_DEFAULT_DATABASE,
   noDelay: true,

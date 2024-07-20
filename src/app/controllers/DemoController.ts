@@ -275,6 +275,8 @@ class DemoController {
       /**We generate a random user. */
       const demo_user = generate_user();
 
+      console.time("create_user_mysql");
+
       /**We connect to the SQL database */
       const sql = await connect_sql();
       /**We Insert the data into the Demo table */
@@ -305,6 +307,8 @@ class DemoController {
         query_res[0]._id || ""
       );
 
+      console.timeEnd("create_user_mysql");
+
       /**Validating if there is a result */
       if (query_res.length <= 0)
         throw { msg: "User not found", code: "QUY0000001" };
@@ -318,9 +322,9 @@ class DemoController {
         query_res[0].userType,
         socketRoomId
       );
-      console.log({ userClassStaticFetch, userObj });
+      // console.log({ userClassStaticFetch, userObj });
       await userObj.updateDOB(faker.date.birthdate());
-      console.log({ userObj });
+      // console.log({ userObj });
 
       /**Close SQL connection*/
 
@@ -348,6 +352,8 @@ class DemoController {
 
       const socketRoomId = uuidv4();
 
+      console.time("create_user_postgres");
+
       const data = await query_pg(
         `insert into demo(name, age, dob, userType) values($1, $2, $3, $4) returning _id, name, age, dob, userType, createdAt, updatedAt;`,
         [demo_user.full_name, demo_user.age, demo_user.dob, demo_user.userType]
@@ -359,6 +365,8 @@ class DemoController {
         `insert into "DemoSocketRoomId"(socket_room_id, demoid) values($1, $2);`,
         [socketRoomId, user._id || ""]
       );
+
+      console.timeEnd("create_user_postgres");
 
       return res
         .status(200)
@@ -385,6 +393,8 @@ class DemoController {
       /**We generate a random user. */
       const demo_user = generate_user();
 
+      console.time("create_user_mongo");
+
       /**Using the predefined Schema Static function */
       const demo_static_result = await Demo_User.createDemo({
         name: demo_user.full_name,
@@ -392,7 +402,7 @@ class DemoController {
         dob: demo_user.dob,
         userType: demo_user.userType,
       });
-      // console.log({ demo_static_result });
+      console.timeEnd("create_user_mongo");
 
       /**Create a 'Demo' document with the user info from 'demo_user' 
        * 

@@ -32,7 +32,7 @@ const demoAccountSchema = new Schema<DemoAccountSchemaType>(
       type: String,
       required: true,
       default: () => uuidv4(),
-      immutable: true,
+      // immutable: true,
     },
     demo_id: {
       type: String,
@@ -52,7 +52,7 @@ const demoAccountSchema = new Schema<DemoAccountSchemaType>(
       type: String,
       required: true,
       default: () => uuidv4(),
-      immutable: true,
+      // immutable: true,
     },
     balance: {
       type: Number,
@@ -68,16 +68,31 @@ const demoAccountSchema = new Schema<DemoAccountSchemaType>(
   }
 );
 
-// Pre-save middleware to validate the referenced demo_id
+/**
+ * Pre-save middleware for the demoAccountSchema.
+ *
+ * This middleware is triggered before saving a document. It ensures that
+ * certain fields (_id, account, createdAt) cannot be modified once the document
+ * is created.
+ *
+ * @param {Function} next - The callback function to proceed to the next middleware.
+ * @returns {void}
+ */
 demoAccountSchema.pre("save", async function (next) {
   const demoAccount = this as DemoAccountSchemaType;
+  if (
+    !demoAccount.isNew &&
+    (demoAccount.isModified("_id") ||
+      demoAccount.isModified("account") ||
+      demoAccount.isModified("createdAt"))
+  ) {
+    demoAccount.invalidate(
+      "readOnlyField",
+      "Certain fields cannot be modified"
+    );
+  }
+
   next();
-  // const user = await Demo_User.findById(demoAccount.demo_id);
-  // if (!user) {
-  //   next(new Error(`Demo_User with id ${demoAccount.demo_id} does not exist`));
-  // } else {
-  //   next();
-  // }
 });
 
 /**
