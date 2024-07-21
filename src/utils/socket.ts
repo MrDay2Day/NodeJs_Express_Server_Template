@@ -70,34 +70,43 @@ export async function init(httpServer: http.Server) {
 
 /**To get Access to Web socket
   * To use io
- * @example const { getIO } = require("../socket");
- * 
- * => Server Side
- * 
-  * io.getIO().emit("event", 
+  * 
+  * @function getIO()
+  * @returns {Server} Server with socket connection
+  * @example 
+  * 
+  * // Server Side using getIO()
+  * 
+  * const { getIO } = require("../socket");
+  * 
+  * // General Emit to all sockets
+  * io.emit("event", 
   *   { 
   *     action: "create",
   *     data: { ... }
   *   }
   * );
   * 
-  * io.to(<client/room id>).emit("event", 
+  * // Send to specific socket id  or room id
+  * io.to(<client/room_id>).emit("event", 
   *   { 
   *     action: "create",
   *     data: { ... }
   *   }
   * );
- * 
- * 
- * => Client side
- * 
+  * 
+  * 
+  * @example
+  * 
+  * // Client Side using SocketIO
+  * 
   * socket.on("event", (data) => {
-        if(data.action === "create"){
-          console.log({ data })
-        }
-      });
+      if(data.action === "create"){
+        console.log({ data })
+      }
+    });
  */
-export async function getIO() {
+export function getIO(): Server {
   if (!io) {
     throw new Error("Socket.io not initialized!");
   }

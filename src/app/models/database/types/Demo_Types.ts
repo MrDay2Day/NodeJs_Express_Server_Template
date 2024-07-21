@@ -5,18 +5,18 @@ export enum UserType {
 }
 
 export type DemoTypes = {
-  _id?: string;
+  readonly _id?: string;
   name: string;
   age?: number;
   dob: Date;
   userType: UserType;
-  socketRoomId?: string;
+  readonly socketRoomId?: string;
 };
 
 export type DemoAccountTypes = {
-  _id: string;
-  demo_id: string;
-  account: string;
+  readonly _id: string;
+  readonly demo_id: string;
+  readonly account: string;
   balance: number;
 };
 

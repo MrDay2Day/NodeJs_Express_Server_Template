@@ -45,7 +45,7 @@ export default class SocketEngine {
     /**Examples of general socket listeners */
     socket.on("ping", async (data, callback) => {
       try {
-        const io = await getIO();
+        const io = getIO();
         /**This function should be used to validate socket connection that it is associated with a valid user. */
         await this.validate_socket(socket);
         console.log("Received PING data:", {
@@ -93,7 +93,7 @@ export default class SocketEngine {
     try {
       console.log({ socketRoom, socketId });
       /** Establishing SocketIO Server Access */
-      const io = await getIO();
+      const io = getIO();
 
       /** getting the socket connection instance for the ID */
       const socket = io.sockets.sockets.get(socketId);
