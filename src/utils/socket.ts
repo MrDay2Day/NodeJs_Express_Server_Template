@@ -69,42 +69,55 @@ export async function init(httpServer: http.Server) {
 }
 
 /**To get Access to Web socket
-  * To use io
-  * 
-  * @function getIO()
-  * @returns {Server} Server with socket connection
-  * @example 
-  * 
-  * // Server Side using getIO()
-  * 
-  * const { getIO } = require("../socket");
-  * 
-  * // General Emit to all sockets
-  * io.emit("event", 
-  *   { 
-  *     action: "create",
-  *     data: { ... }
-  *   }
-  * );
-  * 
-  * // Send to specific socket id  or room id
-  * io.to(<client/room_id>).emit("event", 
-  *   { 
-  *     action: "create",
-  *     data: { ... }
-  *   }
-  * );
-  * 
-  * 
-  * @example
-  * 
-  * // Client Side using SocketIO
-  * 
-  * socket.on("event", (data) => {
-      if(data.action === "create"){
-        console.log({ data })
-      }
-    });
+ * To use io
+ *
+ * @function getIO()
+ *
+ * @returns {Server} Server with socket connection
+ *
+ * @example Server Side
+ *
+ * const { getIO } = require("../socket");
+ *
+ * // General Emit to all sockets
+ *
+ * const io = getIO();
+ * io.emit("event",
+ *   {
+ *     action: "create",
+ *     data: { ... }
+ *   }
+ * );
+ *
+ * // Send to specific socket id  or room id
+ *
+ * const io = getIO();
+ * const data = { action: "create" };
+ *
+ * io
+ *   .to(<client/room_id>)
+ *   .emit("reg_event", data);
+ *
+ * io
+ *   .to(<client/room_id>)
+ *   .emit("ack_demo", data, ack => ack && console.log(ack) );
+ *   // "ack" is only applicable if receiver acknowledges message with a reply.
+ *
+ *
+ * @example Client Side
+ *
+ * socket.on("reg_event", (data) => {
+ *     console.log({ data })
+ * });
+ *
+ * socket.on("ack_demo", (data, ack) => {
+ *   if(data.action === "create"){
+ *     console.log({ data })
+ *     ack({ response: true });
+ *   }else{
+ *     ack({ response: false });
+ *   };
+ * });
  */
 export function getIO(): Server {
   if (!io) {

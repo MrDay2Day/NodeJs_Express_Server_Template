@@ -1,48 +1,56 @@
 import http from "http";
 
-export const text_black = (input: string) => "\x1b[30m" + input + "\x1b[0m";
-export const text_red = (input: string) => "\x1b[31m" + input + "\x1b[0m";
-export const text_green = (input: string) => "\x1b[32m" + input + "\x1b[0m";
-export const text_yellow = (input: string) => "\x1b[33m" + input + "\x1b[0m";
-export const text_blue = (input: string) => "\x1b[34m" + input + "\x1b[0m";
-export const text_magenta = (input: string) => "\x1b[35m" + input + "\x1b[0m";
-export const text_cyan = (input: any) => "\x1b[36m" + input + "\x1b[0m";
-export const text_white = (input: string) => "\x1b[37m" + input + "\x1b[0m";
+export const text_black = (input: string): string =>
+  "\x1b[30m" + input + "\x1b[0m";
+export const text_red = (input: string): string =>
+  "\x1b[31m" + input + "\x1b[0m";
+export const text_green = (input: string): string =>
+  "\x1b[32m" + input + "\x1b[0m";
+export const text_yellow = (input: string): string =>
+  "\x1b[33m" + input + "\x1b[0m";
+export const text_blue = (input: string): string =>
+  "\x1b[34m" + input + "\x1b[0m";
+export const text_magenta = (input: string): string =>
+  "\x1b[35m" + input + "\x1b[0m";
+export const text_cyan = (input: any): string => "\x1b[36m" + input + "\x1b[0m";
+export const text_white = (input: string): string =>
+  "\x1b[37m" + input + "\x1b[0m";
 
 // Bright colors
 export const text_bright = (input: string) => "\x1b[1m" + input + "\x1b[0m";
-export const text_bright_black = (input: string) =>
+export const text_bright_black = (input: string): string =>
   "\x1b[90m" + input + "\x1b[0m";
-export const text_bright_red = (input: string) =>
+export const text_bright_red = (input: string): string =>
   "\x1b[91m" + input + "\x1b[0m";
-export const text_bright_green = (input: string) =>
+export const text_bright_green = (input: string): string =>
   "\x1b[92m" + input + "\x1b[0m";
-export const text_bright_yellow = (input: string) =>
+export const text_bright_yellow = (input: string): string =>
   "\x1b[93m" + input + "\x1b[0m";
-export const text_bright_blue = (input: string) =>
+export const text_bright_blue = (input: string): string =>
   "\x1b[94m" + input + "\x1b[0m";
-export const text_bright_magenta = (input: string) =>
+export const text_bright_magenta = (input: string): string =>
   "\x1b[95m" + input + "\x1b[0m";
-export const text_bright_cyan = (input: any) => "\x1b[96m" + input + "\x1b[0m";
-export const text_bright_white = (input: string) =>
+export const text_bright_cyan = (input: any): string =>
+  "\x1b[96m" + input + "\x1b[0m";
+export const text_bright_white = (input: string): string =>
   "\x1b[97m" + input + "\x1b[0m";
 
 // Underscored colors
-export const text_black_underscore = (input: string) =>
+export const text_black_underscore = (input: string): string =>
   "\x1b[38;5;232m" + input + "\x1b[0m";
-export const text_red_underscore = (input: string) =>
+export const text_red_underscore = (input: string): string =>
   "\x1b[38;5;196m" + input + "\x1b[0m";
-export const text_green_underscore = (input: string) =>
+export const text_green_underscore = (input: string): string =>
   "\x1b[38;5;102m" + input + "\x1b[0m";
-export const text_yellow_underscore = (input: string) =>
+export const text_yellow_underscore = (input: string): string =>
   "\x1b[38;5;226m" + input + "\x1b[0m";
-export const text_blue_underscore = (input: string) =>
+export const text_blue_underscore = (input: string): string =>
   "\x1b[38;5;49m" + input + "\x1b[0m";
-export const text_magenta_underscore = (input: string) =>
+export const text_magenta_underscore = (input: string): string =>
   "\x1b[38;5;125m" + input + "\x1b[0m";
-export const text_cyan_underscore = (input: any) =>
+export const text_cyan_underscore = (input: any): string =>
   "\x1b[38;5;51m" + input + "\x1b[0m";
-export const text_white_underscore = (input: string) =>
+export const text_white_underscore = (input: string): string =>
   "\x1b[38;5;255m" + input + "\x1b[0m";
 
 export const serverDataInfo = (

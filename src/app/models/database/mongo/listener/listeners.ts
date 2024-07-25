@@ -7,11 +7,11 @@ import Demo from "../schemas/Demo_User";
  * If an error occurs during the initialization, it logs the error to the console.
  *
  * @function MongoMainListener
- * @example
- * // To start listening for changes on the Demo collection:
+ * @example To start listening for changes on the Demo collection:
  * MongoMainListener();
+ * @returns {void}
  */
-export function MongoMainListener() {
+export function MongoMainListener(): void {
   try {
     DemoListener();
   } catch (error) {
@@ -28,14 +28,14 @@ export function MongoMainListener() {
  * the error to the console.
  *
  * @function DemoListener
- * @example
- * // Automatically called by MongoMainListener to start listening for changes:
+ * @example Automatically called by MongoMainListener to start listening for changes:
  * DemoListener();
  *
- * // Example use case:
- * // 1. Listening for real-time updates to the 'Demo' collection.
- * // 2. Logging changes to the console for debugging or monitoring purposes.
- * // 3. Triggering additional application logic based on changes in the collection.
+ * @description
+ * Example use case:
+ * 1. Listening for real-time updates to the 'Demo' collection.
+ * 2. Logging changes to the console for debugging or monitoring purposes.
+ * 3. Triggering additional application logic based on changes in the collection.
  */
 function DemoListener() {
   try {

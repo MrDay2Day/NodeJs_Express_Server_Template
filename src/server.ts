@@ -9,11 +9,12 @@ import http from "http";
 import DBConfiguration from "./config/db_config";
 import { text_bright, text_bright_red } from "./utils/serverDataInfo";
 
-function start() {
+function start(): void {
   try {
     console.log(
       text_bright(`
-\n**************************************\n
+\n
+**************************************\n
     START `) +
         `${text_bright_red(process.env.APP_NAME)}` +
         text_bright(` SERVER\n
