@@ -24,7 +24,7 @@ This template has built-in file management using `S3` _(Simple Storage Service)_
 
 ### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to make changes as you see fit.**
 
-## What did I build **Repo**?
+## Why did I build **Repo**?
 
 Simple I am a **developer** who creates a lot of _servers_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I use most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
 
@@ -121,7 +121,7 @@ These are features & technologies that may or may not be integrated in the futur
 - ✅ Backblaze💡
 - ✏️ Dockerize🕯️
 - ✏️ Custom Task Queue🕯️
-- ✅ AWS💡
+- ✅ AWS-SES💡
 - ⚠️ tRCP❓
 - 💭 GraphQL❓
 - ➡️ ServerSide Events💡
