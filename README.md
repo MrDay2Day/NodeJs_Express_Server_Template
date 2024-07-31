@@ -24,6 +24,8 @@ This template has built-in file management using `S3` _(Simple Storage Service)_
 
 ### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to make changes as you see fit.**
 
+###
+
 ## Why did I build **Repo**?
 
 Simple I am a **developer** who creates a lot of _servers_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I use most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
@@ -51,7 +53,7 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 - Cors
 - Compression
 
----
+###
 
 ## Why recommend **KeyDB** > Redis🖕🏿
 
@@ -60,9 +62,9 @@ Well, that is because of the whole [license](https://redis.io/legal/licenses/) i
 
 You are still able to use `Redis` if it and it's license best suit your needs
 
----
+###
 
-### **Key Features**
+## **Key Features**
 
 1. Self generating SQL databases and tables.
 1. Scalability through ~~Redis~~ **-> KeyDB** using websocket connections.
@@ -92,43 +94,53 @@ Then
 
 This will start the typescript compiler and also Nodemon
 
-## Feature & Technologies List
+## **Feature & Technologies List**
 
 These are features & technologies that may or may not be integrated in the future.
 
-**Stages 👇🏿**
+### **Stages 👇🏿**
 
 👉🏿 ✅ Completed  
-👉🏿 ➡️ In Progress  
-👉🏿 ✏️ Planning  
-👉🏿 💭 Considering  
-👉🏿 ⚠️ Issue  
-👉🏿 ❌ Cancelled
+ 👉🏿 ➡️ In Progress  
+ 👉🏿 ✏️ Planning  
+ 👉🏿 💭 Considering  
+ 👉🏿 ⚠️ Issue  
+ 👉🏿 ❌ Cancelled
 
-**Implementation Style 👇🏿**  
+### **Implementation Style 👇🏿**
+
 👉🏿 💡 Custom Implementation _(All Custom implementations are accompanied by documentation and examples)_  
-👉🏿 🕯️ Standard/Traditional Implementation  
-👉🏿 ❓ Not Sure
+ 👉🏿 🕯️ Standard/Traditional Implementation  
+ 👉🏿 ❓ Not Sure
 
 **Current List**
 
-- ✅ MySQL💡
+- ✅ MySQL💡 _(Industry Standard)_
 - ✅ PostGrSQL💡 _([Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47))_
 - ✅ MongoDB💡 _(Recommended DB for Scale)_
-- ✅ Socket.IO💡
-- ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**)💡
-- ✅ Multer💡
-- ✅ Backblaze💡
+- ✅ Socket.IO💡 _(Realtime Communication)_
+- ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**, can be used as DB cache)💡
+- ✅ Multer💡 _(File Management through `form-data`)_
+- ✅ Backblaze💡 _(S3 Storage - Private & Public)_
 - ✏️ Dockerize🕯️
 - ✏️ Custom Task Queue🕯️
-- ✅ AWS-SES💡
+- ✏️ SMS🕯️
+- ✅ AWS-SES💡 _(Emailing Service)_
 - ⚠️ tRCP❓
-- 💭 GraphQL❓
-- ➡️ ServerSide Events💡
+- ❌ GraphQL❓
+- ➡️ ServerSide Events Example💡
+- ❌ HandlebarsJS Examples _(For specified routes)_
+
+**Payments**
+
 - ✏️ Paddle❓
 - ✏️ Stripe❓
 - ✏️ Paypal❓
-- ✏️ Stripe❓
-- 💭 HandlebarsJS _(For specified routes)_
-- 💭 Google Auth _(With Recommendations and Procedures)_
-- 💭 Facebook Auth _(With Recommendations and Procedures)_
+
+**Authentication**
+
+- ✏️ Google Auth _(With Recommendations and Procedures)_
+- ✏️ Microsoft Auth _(With Recommendations and Procedures)_
+- ✏️ Twitter Auth _(With Recommendations and Procedures)_
+- ✏️ LinkedIn Auth _(With Recommendations and Procedures)_
+- ✏️ Facebook Auth _(With Recommendations and Procedures)_
