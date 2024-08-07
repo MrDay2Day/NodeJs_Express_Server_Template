@@ -17,13 +17,17 @@ import sizeOf from "buffer-image-size";
 
 import B2 from "backblaze-b2";
 import { Response } from "express";
-import { checkJSONToArray } from "../utils/helpers";
+import { checkJSONToData } from "../utils/helpers";
 
 const max_thumbnail = 300;
 const max_image = 1000;
 
-const fileTypes = checkJSONToArray(process.env.FILE_TYPES || "");
-const imagesOnly = checkJSONToArray(process.env.IMAGES_ONLY || "");
+const fileTypes = checkJSONToData<string[]>(
+  process.env.FILE_TYPES || ""
+) as string[];
+const imagesOnly = checkJSONToData<string[]>(
+  process.env.IMAGES_ONLY || ""
+) as string[];
 
 async function WriteFileToDB(x: any) {
   return x;
@@ -37,18 +41,20 @@ const b2_private_credentials = {
   applicationKeyId: process.env.BACKBLAZE_PRIVATE_KEY_ID,
   applicationKey: process.env.BACKBLAZE_PRIVATE_KEY,
 };
-const b2_private = new B2(b2_private_credentials);
+const b2_private =
+  process.env.ENABLE_FILE_UPLOAD === "y"
+    ? new B2(b2_private_credentials)
+    : undefined;
 
-// var encodedBase64_private = Buffer.from(
-//   b2_private.applicationKeyId + ":" + b2_private.applicationKey
-// ).toString("base64");
-// console.log({ b2_private, encodedBase64_private });
-async function GetBucket() {
+async function GetBucket(): Promise<void> {
   try {
-    await b2_private.authorize(); // must authorize first (authorization lasts 24 hrs)
-    let response = await b2_private.getBucket({
-      bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
-    });
+    if (b2_private && process.env.ENABLE_FILE_UPLOAD === "y") {
+      await b2_private.authorize(); // must authorize first (authorization lasts 24 hrs)
+      let response = await b2_private.getBucket({
+        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
+      });
+    }
+    return;
   } catch (err) {
     console.log("S3 Storage Error", err);
   }
@@ -154,7 +160,7 @@ class Worker {
       //   filePath,
       //   Sha1,
       // });
-      const upload = await b2_private.uploadFile({
+      const upload = await b2_private?.uploadFile({
         uploadUrl,
         uploadAuthToken: uploadAuthorizationToken,
         fileName: filePath,
@@ -164,7 +170,7 @@ class Worker {
         hash: Sha1,
         onUploadProgress: (event: any) => {},
       });
-      return upload.data;
+      return upload?.data;
     } catch (err) {
       throw err;
     }
@@ -173,18 +179,18 @@ class Worker {
   static backblazeUpload = async (file: any, type: string, userId: string) => {
     // return;
     try {
-      const response = await b2_private.authorize();
+      const response = await b2_private?.authorize();
 
       // console.log({ response });
 
-      const data = response.data;
+      const data = response?.data;
 
-      const uploadRequest = await b2_private.getUploadUrl({
+      const uploadRequest = await b2_private?.getUploadUrl({
         bucketId: data.allowed.bucketId,
       });
 
-      var uploadUrl = uploadRequest.data.uploadUrl;
-      var uploadAuthorizationToken = uploadRequest.data.authorizationToken;
+      var uploadUrl = uploadRequest?.data.uploadUrl;
+      var uploadAuthorizationToken = uploadRequest?.data.authorizationToken;
       var extension =
         file.originalname.split(".")[file.originalname.split(".").length - 1];
       var fileName = `${uuidv4()}-${Date.now()}`;
@@ -262,14 +268,14 @@ class Worker {
   ) => {
     // return;
     try {
-      const deleteRequest = await b2_private.deleteFileVersion({
+      const deleteRequest = await b2_private?.deleteFileVersion({
         fileId,
         fileName,
       });
 
-      console.log({ deleteRequest: deleteRequest.data });
+      console.log({ deleteRequest: deleteRequest?.data });
 
-      return { deleteRequest: deleteRequest.data };
+      return { deleteRequest: deleteRequest?.data };
     } catch (err) {
       console.log({ err });
       throw err;
@@ -371,7 +377,7 @@ class FileManagement {
         throw { msg: "File fetch disabled.", code: "BB0000001" };
       }
 
-      var fileToSend = await b2_private.downloadFileByName({
+      var fileToSend = await b2_private?.downloadFileByName({
         bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
         fileName,
         // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
@@ -381,7 +387,7 @@ class FileManagement {
       res
         .status(200)
         .setHeader("Content-Type", contentType)
-        .send(fileToSend.data);
+        .send(fileToSend?.data);
     } catch (err: any | unknown) {
       res.status(400).json({
         valid: false,
