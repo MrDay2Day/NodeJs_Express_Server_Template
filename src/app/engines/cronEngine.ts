@@ -1,7 +1,7 @@
 import {
-  getRandomNumber,
   generateString,
   getRandomElement,
+  getRandomNumber,
 } from "../utils/helpers";
 
 /**
@@ -17,14 +17,23 @@ interface TaskTypes<T, R> {
   action: (task: T) => R;
 }
 
+type CalculateType<T, R> =
+  | TaskTypes<T, R>[]
+  | TaskTypes<T, R>
+  | T
+  | string
+  | number
+  | any;
+
 /**
  * A class to manage and schedule tasks based on their expiry dates.
  * @typedef {Object} TaskTypes
  * @property {string} task - The name of the task.
  * @property {Date} expiryDate - The date and time at which the task should expire.
  * @property {function(task: T): R} action - The function to be executed when the task expires.
+ *
+ *
  */
-
 export default class TaskScheduler<T, R> {
   /**
    * @type {number}
@@ -40,6 +49,9 @@ export default class TaskScheduler<T, R> {
    * Creates a new TaskScheduler instance.
    *
    * Internally sets the check interval to 1 second (1000 milliseconds) and initializes the interval check.
+   *
+   * @note  The IF condition in "removeTask(task: T)" should be edited to fine tune the way task are located to be removed from the task queue, currently tasked are stringified and compared.
+   * @suggestion The use of a unique ID to identify each task.
    */
   constructor() {
     this.tasks = [];
@@ -58,10 +70,16 @@ export default class TaskScheduler<T, R> {
     this.tasks.push({ task, expiryDate, action });
   }
 
+  /**
+   * EDIT REQUIRED!!!
+   *
+   * EDIT ONLY THE IF CONDITION!!!
+   */
   removeTask(task: T) {
     this.tasks = this.tasks.filter((taskObj) => {
+      // EDIT ONLY THE IF CONDITION!!!
       if (JSON.stringify(taskObj.task) === JSON.stringify(task)) {
-        console.log(`REMOVED`, { removedTask: taskObj });
+        // EDIT ONLY THE IF CONDITION!!!
         return false;
       }
       return true;
@@ -78,6 +96,7 @@ export default class TaskScheduler<T, R> {
   }
 
   /**
+   * EDIT ALERT: This can be edited for a specific criteria.
    * Checks for expired tasks and executes their associated actions.
    *
    * Removes expired tasks from the internal list.
@@ -96,20 +115,22 @@ export default class TaskScheduler<T, R> {
     });
   }
 
-  private approximateSize(obj: TaskTypes<T, R>[] | T | string | number | any) {
+  private approximateSize(obj: CalculateType<T, R>): number {
     const type = typeof obj;
     let size: number = 0;
 
     if (obj instanceof Array) {
-      obj.forEach((e) => (size += this.approximateSize(e)));
+      obj.forEach(
+        (e: CalculateType<T, R>) => (size += this.approximateSize(e))
+      );
     } else if (typeof obj === "string") {
       size = obj.length * 2; // Assuming 2 bytes per character (UTF-16)
     } else if (type === "object" && typeof obj === "object") {
       // Loop through object properties and estimate sizes recursively
       for (const key in obj) {
-        if (obj && key && typeof key === "string") {
-          const tempt: TaskTypes<T, R>[] | T | string | number = obj[key];
-          if (typeof tempt === "string") size += this.approximateSize(tempt);
+        if (obj.hasOwnProperty(key)) {
+          const value = obj[key];
+          size += this.approximateSize(value as CalculateType<T, R>);
         }
       }
       // Add overhead for object structure (rough estimate)
@@ -128,11 +149,15 @@ export default class TaskScheduler<T, R> {
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-// EXAMPLES
+// Example usage:
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
+/** Please take note of the examples below and the use of "TaskScheduler" in a dynamic way. */
+
+/////////////////////////////////////////////////////////////////////////////
 // EXAMPLE 1
+/////////////////////////////////////////////////////////////////////////////
 
 /**
  * This Type declaration represents the type of the task in the cron. By default the type is string however the type can be set to anything.
@@ -173,8 +198,9 @@ console.log(
 // Example of removing a task before it has expire.
 scheduler.removeTask("Example Task 28");
 
-///////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 // EXAMPLE 2
+/////////////////////////////////////////////////////////////////////////////
 
 /**
  * Represents a single task type with name, age, and gender properties.
@@ -232,6 +258,6 @@ console.log(
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
-// End of Examples
+// End of Example
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
