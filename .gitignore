@@ -1,2 +1,5 @@
 node_modules
 code/*
+src/config/mongo/temp/storage_1
+src/config/mongo/temp/storage_2
+src/config/mongo/temp/storage_3

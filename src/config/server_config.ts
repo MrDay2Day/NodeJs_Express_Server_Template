@@ -21,13 +21,13 @@ export function start_server(
       serverInstanceId
     )}\n`
   );
-  server.listen(Number(process.env.PORT), async () => {
+  server.listen(Number(process.env.PORT || ""), async () => {
     console.log(text_bright(`\n**************************************\n`));
     console.log(
       text_bright(
-        `    ${text_bright_red(process.env.APP_NAME)}${text_bright(
+        `    ${text_bright_red(process.env.APP_NAME || "")}${text_bright(
           " RUNNING ON PORT --> "
-        )}${text_bright_blue(process.env.PORT)}`
+        )}${text_bright_blue(process.env.PORT || "")}`
       )
     );
     console.log(text_bright(`\n**************************************\n`));

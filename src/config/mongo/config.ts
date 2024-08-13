@@ -26,6 +26,9 @@ export function ConnectMongoDB(): Promise<{
 
     const dev_server = is_dev
       ? await MongoMemoryReplSet.create({
+          binary: {
+            version: "7.0.11",
+          },
           instanceOpts: [
             {
               port: 50111,
@@ -56,7 +59,9 @@ export function ConnectMongoDB(): Promise<{
         text_cyan(`\t\t-> MongoDB_Dev_Server --> ${dev_server.getUri()}`)
       );
     }
-    const uri = is_dev ? dev_server?.getUri() || "" : process.env.MONGO_URL;
+    const uri = is_dev
+      ? dev_server?.getUri() || ""
+      : process.env.MONGO_URL || "";
 
     await mongoose
       .connect(uri, MONGOOSE_OPTIONS)

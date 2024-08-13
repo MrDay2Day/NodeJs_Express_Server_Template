@@ -86,3 +86,13 @@ export function getRandomElement<T>(array: Array<T>): T | undefined {
   // Return the element at the random index
   return array[randomIndex];
 }
+
+export function isStringNumber(value: string | undefined): number {
+  if (typeof value === undefined) return 0;
+  const num = Number(value);
+  if (!Number.isNaN(num) && Number.isFinite(num)) {
+    return num;
+  } else {
+    return 0;
+  }
+}

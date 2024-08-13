@@ -38,20 +38,20 @@ async function DeleteFileToDB(x: any) {
 }
 
 const b2_private_credentials = {
-  applicationKeyId: process.env.BACKBLAZE_PRIVATE_KEY_ID,
-  applicationKey: process.env.BACKBLAZE_PRIVATE_KEY,
+  applicationKeyId: process.env.BACKBLAZE_PRIVATE_KEY_ID || "",
+  applicationKey: process.env.BACKBLAZE_PRIVATE_KEY || "",
 };
 const b2_private =
-  process.env.ENABLE_FILE_UPLOAD === "y"
+  (process.env.ENABLE_FILE_UPLOAD || "") === "y"
     ? new B2(b2_private_credentials)
     : undefined;
 
 async function GetBucket(): Promise<void> {
   try {
-    if (b2_private && process.env.ENABLE_FILE_UPLOAD === "y") {
+    if (b2_private && (process.env.ENABLE_FILE_UPLOAD || "") === "y") {
       await b2_private.authorize(); // must authorize first (authorization lasts 24 hrs)
       let response = await b2_private.getBucket({
-        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
+        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME || "",
       });
     }
     return;
@@ -208,7 +208,7 @@ class Worker {
         resizedImage = (await this.resizeImage(source, max_image)) as Buffer;
         resizedImage = await this.addWatermark(
           resizedImage,
-          process.env.APP_NAME
+          process.env.APP_NAME || ""
         );
       }
 
@@ -378,7 +378,7 @@ class FileManagement {
       }
 
       var fileToSend = await b2_private?.downloadFileByName({
-        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME,
+        bucketName: process.env.BACKBLAZE_PRIVATE_BUCKET_NAME || "",
         fileName,
         // options are as in axios: 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
         responseType: "arraybuffer",

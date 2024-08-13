@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "18.19"
+  },
   "name": "express-server",
   "version": "1.0.0",
   "description": "A Boilerplate NodeJS Express Server Template written in Typescript built for scale!",
@@ -6,8 +9,10 @@
   "scripts": {
     "start": "node code/src/server.js",
     "tsc": "tsc-watch",
-    "node": "nodemon code/src/server.js",
-    "dev": "npm-run-all --parallel tsc node"
+    "node": "nodemon ./code/src/server.js",
+    "dev": "npm-run-all --parallel tsc node",
+    "ts-dev": "npx ts-node-dev --poll --watch ./src/* --respawn ./src/server.ts",
+    "ts": "ts-node ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -29,9 +34,6 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.473.0",
     "@socket.io/redis-adapter": "^8.3.0",
-    "@types/nodemailer": "^6.4.15",
-    "@types/pg": "^8.11.6",
-    "@types/socket.io": "^3.0.2",
     "backblaze-b2": "^1.7.0",
     "buffer-image-size": "^0.6.4",
     "compression": "^1.7.4",
@@ -63,12 +65,11 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "mongodb-memory-server": "^9.4.0",
-    "typescript": "^5.5.2",
-    "tsc-watch": "^6.0.4",
-    "request-stats": "^3.0.0",
-    "@trpc/server": "^10.45.2",
     "@faker-js/faker": "^8.4.1",
+    "@trpc/server": "^10.45.2",
+    "@types/nodemailer": "^6.4.15",
+    "@types/pg": "^8.11.6",
+    "@types/socket.io": "^3.0.2",
     "@types/backblaze-b2": "^1.5.6",
     "@types/bcrypt": "^5.0.2",
     "@types/compression": "^1.7.5",
@@ -79,7 +80,14 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.14.8",
     "@types/semver": "^7.5.8",
-    "@types/uuid": "^9.0.8"
+    "@types/uuid": "^9.0.8",
+    "mongodb-memory-server": "^9.4.0",
+    "request-stats": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsc-watch": "^6.0.4",
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.4"
   },
   "config": {
     "mongodbMemoryServer": {

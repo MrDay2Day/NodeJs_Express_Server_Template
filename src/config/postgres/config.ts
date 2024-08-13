@@ -4,21 +4,22 @@ import {
   createPGTables,
 } from "../../app/models/database/potsgres/trigger";
 import { text_bright_yellow } from "../../utils/serverDataInfo";
+import { isStringNumber } from "../../app/utils/helpers";
 const { Pool } = pg;
 
-export const pg_connection_data = {
+export const pg_connection_data: PoolConfig = {
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   password: process.env.PG_PASS,
-  port: process.env.PG_PORT,
+  port: isStringNumber(process.env.PG_PORT),
 };
 
-export const pg_connection_data_with_database = {
+export const pg_connection_data_with_database: PoolConfig = {
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   database: process.env.PG_DB,
   password: process.env.PG_PASS,
-  port: process.env.PG_PORT,
+  port: isStringNumber(process.env.PG_PORT),
 };
 
 export const pg_pool = async function (connection: PoolConfig) {

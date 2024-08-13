@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  express-typescript:
+    environment:
+      - NODE_ENV=development
+      - PORT=${PORT}
+      - APP_NAME=${APP_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    container_name: ${APP_NAME}-Development
+    expose:
+      - ${PORT}
+    ports:
+      - "3330:${PORT}"
+    command: npx ts-node-dev --poll --watch ./src/* --respawn ./src/server.ts

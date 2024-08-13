@@ -16,7 +16,7 @@ function start(): void {
 \n
 **************************************\n
     START `) +
-        `${text_bright_red(process.env.APP_NAME)}` +
+        `${text_bright_red(process.env.APP_NAME || "")}` +
         text_bright(` SERVER\n
 **************************************\n`)
     );

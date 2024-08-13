@@ -43,14 +43,14 @@ declare global {
       PG_HOST: string;
       PG_DB: string;
       PS_PASS: string;
-      PG_PORT: any | number;
+      PG_PORT: string;
       // MySQL
       MYSQL_ACTIVE: string;
       MYSQL_USER: string;
       MYSQL_HOST: string;
       MYSQL_DB: string;
       MYSQL_PASS: string;
-      MYSQL_PORT: any | number;
+      MYSQL_PORT: string;
       // AWS SES Service
       EMAIL_SENDING_ADDRESS: string;
       EMAIL_SHORT_NAME: string;

@@ -1,6 +1,6 @@
 <div align="center">
   <div>&nbsp;</div>
-    <img src="secure/logo.png" width="600"/>
+    <img src="assets/logo.png" width="600"/>
   <div>&nbsp;</div>
 </div>
 
@@ -55,7 +55,7 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 
 Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub.
 
-<img src="secure/ops.png" width="700"/>
+<img src="assets/ops.png" width="700"/>
 
 You are still able to use `Redis` if it and it's license best suit your needs
 
@@ -122,12 +122,13 @@ These are features & technologies that may or may not be integrated in the futur
 - ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**, can be used as DB cache)💡
 - ✅ Multer💡 _(File Management through `form-data`)_
 - ✅ Backblaze💡 _(S3 Storage - Private & Public)_
-- ✏️ Dockerize🕯️
+- ➡️ Dockerize🕯️ _(For Development and Production Deployment)_
 - ✅ Custom Task Queue / CRON🕯️
 - ✏️ SMS🕯️
 - ✅ AWS-SES💡 _(Emailing Service)_
 - ⚠️ tRCP❓
 - ❌ GraphQL❓
+- ✅ TS-NODE💡
 - ➡️ ServerSide Events Example💡
 - ❌ HandlebarsJS Examples _(For specified routes)_
 

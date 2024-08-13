@@ -14,17 +14,16 @@ export type MySQLConnectionType = {
 };
 
 export const mysql_connection_data: MySQLConnectionType = {
-  host: process.env.MYSQL_HOST,
-  // database: process.env.MYSQL_DB,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
+  host: process.env.MYSQL_HOST || "",
+  user: process.env.MYSQL_USER || "",
+  password: process.env.MYSQL_PASS || "",
 };
 
 export const mysql_connection_data_with_database: MySQLConnectionType = {
-  host: process.env.MYSQL_HOST,
-  database: process.env.MYSQL_DB,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASS,
+  host: process.env.MYSQL_HOST || "",
+  database: process.env.MYSQL_DB || "",
+  user: process.env.MYSQL_USER || "",
+  password: process.env.MYSQL_PASS || "",
 };
 
 // export const sql_pool = process.env.MYSQL_ACTIVE

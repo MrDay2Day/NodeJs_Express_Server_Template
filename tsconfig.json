@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
     "resolveJsonModule": true,
-    "outDir": "code/src",
-    "target": "ES2020",
-    // "watch": true,
+    "esModuleInterop": true,
+    "outDir": "code",
+    "target": "ES6",
+    "baseUrl": "./",
     "lib": ["dom", "esnext"],
     "module": "NodeNext",
     "strict": true,
-    "typeRoots": ["secure/global.d.ts", "./node_modules/@types"]
-  }
+    "typeRoots": ["src/types/global.d.ts", "./node_modules/@types"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -105,7 +105,7 @@ export default class SocketEngine {
 
       /** Getting a list of the main socket room */
       const main_socket_room = io.sockets.adapter.rooms.get(
-        process.env.APP_MAIN_SOCKET_ROOM
+        process.env.APP_MAIN_SOCKET_ROOM || "main_socket_room"
       );
 
       /** Add socket connection to the main socket room */
@@ -113,11 +113,11 @@ export default class SocketEngine {
         /** Checking if main socket room has the new ID */
         const has_socket_conn = main_socket_room.has(socketId);
         if (!has_socket_conn) {
-          socket?.join(process.env.APP_MAIN_SOCKET_ROOM);
+          socket?.join(process.env.APP_MAIN_SOCKET_ROOM || "main_socket_room");
         }
       } else {
         /** If the room does not exist on this server it will be created upon adding the ID */
-        socket?.join(process.env.APP_MAIN_SOCKET_ROOM);
+        socket?.join(process.env.APP_MAIN_SOCKET_ROOM || "main_socket_room");
       }
 
       console.log(`${socketRoom} IDs`, {
