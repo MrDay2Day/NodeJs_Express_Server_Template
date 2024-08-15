@@ -59,23 +59,34 @@ Well, that is because of the whole [license](https://redis.io/legal/licenses/) i
 
 You are still able to use `Redis` if it and it's license best suit your needs
 
-## **Key Features**
+# **Key Features**
 
+1. TypeScript for faster development.
 1. Self generating SQL databases and tables.
+1. WebSocket Enabled via SocketIO.
 1. Scalability through ~~Redis~~ **-> KeyDB** using websocket connections.
 1. Using multiple database concurrently.
+1. File management.
+1. Docker Enabled.
 
-## Setup
+# Setup
 
 Copy and paste `.env.template` to `.env`
 
     cp .env.template .env
 
-Then edit the `.env` file with the necessary credentials.
+Then edit the `.env` file with the necessary credentials. Input the required information for the services/features/libraries which will be used.
 
 You are able to use multiple databases in this template whether individually or all at once `PostGres`, `MySQL` and `MongoDB`.
 
 You are able to auto create Database and Tables/Collections on the fly when server starts up.
+_NB: Database can be activated of deactivated based on the `*_ACTIVE` (\* = MONGO | PG | MYSQL) variable `y` is for active, leave blank if not active._
+
+## Development Setup
+
+### Local Development
+
+Development done on the system it will be deployed on.
 
 To start **server** in development mode:
 
@@ -87,61 +98,90 @@ Then
 
 This will start the typescript compiler and also Nodemon
 
-## **Utility Helper Codes**
+### Docker Development
 
-- Random Number Generator - `getRandomNumber(number, number)`
-- Random String Generator - `generateString(length)`
-- JSON Data Checker - `checkJSONToData<DataType>(JSON)`
-- Random select from Array - `getRandomElement<ArrayDataType>(array)`
+Text here
 
-## **Feature & Technologies List**
+## Production Setup
+
+### Local Production Deployment
+
+Deploying on the system it was developed on.
+
+Text here
+
+### Docker Production Deployment
+
+Text here
+
+# **Utility Helper Codes**
+
+| Title                      | Code Example                             | Description                                                                                   |
+| -------------------------- | ---------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Random Number Generator    | `getRandomNumber(number, number)`        | Takes in a high and low number and returns a random number in-between both.                   |
+| Random String Generator    | `generateString(length)`                 | Great for creating temporary passwords with uppercase, lowercase, number & special character. |
+| JSON Data Checker          | `checkJSONToData<DataType>(JSON)`        | Check if a string is JSON and if it is the expected type structure.                           |
+| Random select from Array   | `getRandomElement<ArrayDataType>(array)` | Randomly select an element from an array.                                                     |
+| String to Number Converter | `isStringNumber(string)`                 | Converts a string to a number if possible.                                                    |
+
+# **Feature & Technologies**
 
 These are features & technologies that may or may not be integrated in the future.
 
 ### **Stages 👇🏿**
 
-👉🏿 ✅ Completed  
- 👉🏿 ➡️ In Progress  
- 👉🏿 ✏️ Planning  
- 👉🏿 💭 Considering  
- 👉🏿 ⚠️ Issue  
- 👉🏿 ❌ Cancelled
+| Icon | Status      |
+| ---- | ----------- |
+| ✅   | Completed   |
+| ➡️   | In Progress |
+| ✏️   | Planning    |
+| 💭   | Considering |
+| ⚠️   | Issue       |
+| ❌   | Cancelled   |
 
 ### **Implementation Style 👇🏿**
 
-👉🏿 💡 Custom Implementation _(Custom implementations with docs & examples)_  
- 👉🏿 🕯️ Standard/Traditional Implementation  
- 👉🏿 ❓ Not Sure
+| Icon | Implementation                                                        |
+| ---- | --------------------------------------------------------------------- |
+| 💡   | Custom Implementation _(Custom implementations with docs & examples)_ |
+| 🕯️   | Standard/Traditional Implementation                                   |
+| ❓   | Not Sure                                                              |
 
-**Current List**
+### **Current List**
 
-- ✅ MySQL💡 _(Industry Standard)_
-- ✅ PostGrSQL💡 _([Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47))_
-- ✅ MongoDB💡 _(Recommended DB for Scale)_
-- ✅ Socket.IO💡 _(Realtime Communication)_
-- ✅ ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**, can be used as DB cache)💡
-- ✅ Multer💡 _(File Management through `form-data`)_
-- ✅ Backblaze💡 _(S3 Storage - Private & Public)_
-- ➡️ Dockerize🕯️ _(For Development and Production Deployment)_
-- ✅ Custom Task Queue / CRON🕯️
-- ✏️ SMS🕯️
-- ✅ AWS-SES💡 _(Emailing Service)_
-- ⚠️ tRCP❓
-- ❌ GraphQL❓
-- ✅ TS-NODE💡
-- ➡️ ServerSide Events Example💡
-- ❌ HandlebarsJS Examples _(For specified routes)_
+| Status | Feature                   | Implementation | Notes                                                                                                |
+| ------ | ------------------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
+| ✅     | MySQL                     | 💡             | Industry Standard                                                                                    |
+| ✅     | PostGrSQL                 | 💡             | _[Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47)_ |
+| ✅     | MongoDB                   | 💡             | Recommended DB for Scale                                                                             |
+| ✅     | Socket.IO                 | 💡             | Realtime Communication                                                                               |
+| ✅     | ~~Redis~~ -> KeyDB        | 💡             | Pub/Sub implementation **ONLY**, can be used as DB cache                                             |
+| ✅     | Multer                    | 💡             | File Management through `form-data`                                                                  |
+| ✅     | Backblaze                 | 💡             | S3 Storage - Private & Public                                                                        |
+| ➡️     | Dockerize                 | 🕯️             | For Development and Production Deployment                                                            |
+| ✅     | Custom Task Queue / CRON  | 🕯️             |
+| ✏️     | SMS                       | 🕯️             |
+| ✅     | AWS-SES                   | 💡             | Emailing Service                                                                                     |
+| ⚠️     | tRCP                      | ❓             |
+| ❌     | GraphQL                   | ❓             |
+| ✅     | TS-NODE                   | 💡             |
+| ➡️     | ServerSide Events Example | 💡             |
+| ❌     | HandlebarsJS Examples     | ❓             | _(For specified routes)_                                                                             |
 
-**Payments**
+### **Payments**
 
-- ✏️ Paddle❓
-- ✏️ Stripe❓
-- ✏️ Paypal❓
+| Status | Feature | Implementation | Notes |
+| ------ | ------- | -------------- | ----- |
+| ✏️     | Paddle  | ❓             | -     |
+| ✏️     | Stripe  | ❓             | -     |
+| ✏️     | Paypal  | ❓             | -     |
 
-**Authentication**
+### **Authentication**
 
-- ✏️ Google Auth *(With Recommendations and Procedures)*❓
-- ✏️ Microsoft Auth *(With Recommendations and Procedures)*❓
-- ✏️ Twitter Auth *(With Recommendations and Procedures)*❓
-- ✏️ LinkedIn Auth *(With Recommendations and Procedures)*❓
-- ✏️ Facebook Auth *(With Recommendations and Procedures)*❓
+| Status | Feature        | Implementation | Notes                                 |
+| ------ | -------------- | -------------- | ------------------------------------- |
+| ✏️     | Google Auth    | ❓             | _With Recommendations and Procedures_ |
+| ✏️     | Microsoft Auth | ❓             | _With Recommendations and Procedures_ |
+| ✏️     | Twitter Auth   | ❓             | _With Recommendations and Procedures_ |
+| ✏️     | LinkedIn Auth  | ❓             | _With Recommendations and Procedures_ |
+| ✏️     | Facebook Auth  | ❓             | _With Recommendations and Procedures_ |

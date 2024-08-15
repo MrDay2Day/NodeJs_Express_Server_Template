@@ -12,7 +12,7 @@
     "node": "nodemon ./code/src/server.js",
     "dev": "npm-run-all --parallel tsc node",
     "ts-dev": "npx ts-node-dev --poll --watch ./src/* --respawn ./src/server.ts",
-    "ts": "ts-node ./src/index.ts"
+    "ts": "ts-node ./src/server.ts"
   },
   "repository": {
     "type": "git",

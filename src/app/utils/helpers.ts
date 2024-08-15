@@ -87,6 +87,16 @@ export function getRandomElement<T>(array: Array<T>): T | undefined {
   return array[randomIndex];
 }
 
+/**
+ * Converts a string to a number if possible.
+ *
+ * If the provided value is a string representing a valid number, it is converted to a number and returned.
+ * If the value is undefined, 0 is returned.
+ * If the value cannot be converted to a valid number, 0 is returned.
+ *
+ * @param {string|undefined} value The value to convert.
+ * @returns {number} The converted number or 0 if conversion fails.
+ */
 export function isStringNumber(value: string | undefined): number {
   if (typeof value === undefined) return 0;
   const num = Number(value);
