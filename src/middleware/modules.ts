@@ -30,7 +30,7 @@ app.use(
         defaultSrc: ["'self'"],
       },
     },
-    dnsPrefetchControl: false, // disable
+    dnsPrefetchControl: false,
     referrerPolicy: {
       policy: "same-origin",
     },
@@ -48,7 +48,7 @@ app.use(
 
 app.use(
   helmet(),
-  cookieParser(),
+  cookieParser(process.env.COOKIE_SECRET),
   express.urlencoded({ extended: true }),
   express.json({ limit: "100mb" }),
   compression(),

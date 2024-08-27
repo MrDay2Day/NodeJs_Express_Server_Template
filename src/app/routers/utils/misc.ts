@@ -1,5 +1,7 @@
 import { createToken, createSystemToken } from "../../utils/jwt";
-import { io } from "../../../utils/socket";
+import { io } from "../../../types/utils/socket";
+
+import os from "os";
 
 import { CookieOptions, NextFunction, Request, Response } from "express";
 import DBConfiguration from "../../../config/db_config";
@@ -71,8 +73,9 @@ class Misc {
                   production:
                     process.env.NODE_ENV === "production" ? true : false,
                   date,
-                  server_status: true,
+                  host: os.hostname(),
                   serverInstanceId,
+                  server_status: true,
                   secondary_modules: {
                     socket_status: io ? true : false,
                     redis_status: !!process.env.USE_REDIS,

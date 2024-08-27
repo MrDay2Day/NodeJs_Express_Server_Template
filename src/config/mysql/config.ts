@@ -3,7 +3,7 @@ import {
   checkAndCreateMySQLDatabase,
   createMySQLTables,
 } from "../../app/models/database/mysql/trigger";
-import { text_bright_magenta } from "../../utils/serverDataInfo";
+import { text_bright_magenta } from "../../types/utils/serverDataInfo";
 const sql_promise = mysql;
 
 export type MySQLConnectionType = {

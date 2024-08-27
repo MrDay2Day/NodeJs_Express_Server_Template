@@ -7,10 +7,11 @@
   "description": "A Boilerplate NodeJS Express Server Template written in Typescript built for scale!",
   "main": "server.js",
   "scripts": {
-    "start": "node code/src/server.js",
+    "start": "tsc && node code/server.js",
     "tsc": "tsc-watch",
-    "node": "nodemon ./code/src/server.js",
-    "dev": "npm-run-all --parallel tsc node",
+    "pm2": "pm2 start pm2.config.js",
+    "node-dev": "nodemon ./code/server.js",
+    "dev": "npm-run-all --parallel tsc node-dev",
     "ts-dev": "npx ts-node-dev --poll --watch ./src/* --respawn ./src/server.ts",
     "ts": "ts-node ./src/server.ts"
   },

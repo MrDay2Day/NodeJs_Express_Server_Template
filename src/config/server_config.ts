@@ -1,6 +1,6 @@
 import http from "http";
 import { v4 as uuidv4 } from "uuid";
-import { init } from "../utils/socket";
+import { init } from "../types/utils/socket";
 import { DisconnectReason } from "socket.io";
 import SocketEngine from "../app/engines/socketEngine";
 import {
@@ -9,7 +9,7 @@ import {
   text_bright_blue,
   text_bright_green,
   text_bright_red,
-} from "../utils/serverDataInfo";
+} from "../types/utils/serverDataInfo";
 
 export const serverInstanceId = String(uuidv4()).toUpperCase();
 export function start_server(

@@ -4,7 +4,7 @@ import {
   sql_pool,
 } from "../../../../config/mysql/config";
 import { mysql_tables } from "./schemas/tables";
-import { text_magenta } from "../../../../utils/serverDataInfo";
+import { text_magenta } from "../../../../types/utils/serverDataInfo";
 
 export async function checkAndCreateMySQLDatabase(): Promise<boolean> {
   // Create a connection to the MySQL server

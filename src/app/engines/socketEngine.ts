@@ -1,4 +1,4 @@
-import { getIO } from "../../utils/socket";
+import { getIO } from "../../types/utils/socket";
 import { Socket } from "socket.io";
 import http from "http";
 

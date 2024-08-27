@@ -4,7 +4,6 @@
     "esModuleInterop": true,
     "outDir": "code",
     "target": "ES6",
-    "baseUrl": "./",
     "lib": ["dom", "esnext"],
     "module": "NodeNext",
     "strict": true,

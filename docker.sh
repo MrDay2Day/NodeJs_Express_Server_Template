@@ -3,23 +3,39 @@
 
 # Define a function to bring services up
 prod() {
-    echo "Starting Production services..."
-    docker-compose -f docker-compose-prod.yml down --volumes --rmi all --remove-orphans
-    docker-compose -f docker-compose-prod.yml build
-    docker-compose -f docker-compose-prod.yml up
+    echo "Starting Production services clean..."
+    docker-compose -f docker-compose-prod.yml --build
+    docker-compose -f docker-compose-prod.yml up -d
 }
 
-up() {
+prod-up() {
+    echo "Starting Production services..."
+    docker-compose -f docker-compose-prod.yml --build
+    docker-compose -f docker-compose-prod.yml up -d
+}
+
+scale() {
+    x=$1
+    echo "Starting Production services with scaling..."
+    docker-compose -f docker-compose-prod-scale.yml build
+    docker-compose -f docker-compose-prod-scale.yml up -d --scale node-server=$x
+    echo "Production Container deployed with ${x} node(s)."
+}
+
+dev() {
     echo "Starting Development services..."
-    docker-compose -f docker-compose-dev.yml up
+    docker-compose -f docker-compose-dev.yml --build
+    docker-compose -f docker-compose-dev.yml up -d
 }
 
 # Define a function to bring services down and clean up resources
-down() {
+remove() {
     echo "Remove all versions and services..."
     docker-compose -f docker-compose-dev.yml down --volumes --rmi all --remove-orphans
     docker-compose -f docker-compose-prod.yml down --volumes --rmi all --remove-orphans
+    docker-compose -f docker-compose-prod-scale.yml down --volumes --rmi all --remove-orphans
 }
+
 
 # Define a function to clean up and then start services
 clean() {
@@ -29,11 +45,11 @@ clean() {
 
 # Check for the first argument to determine which function to run
 case "$1" in
-    up)
-        up
+    dev)
+        dev
         ;;
-    down)
-        down
+    remove)
+        remove
         ;;
     clean)
         clean
@@ -41,8 +57,14 @@ case "$1" in
     prod)
         prod
         ;;
+    prod-up)
+        prod-up
+        ;;
+    scale)
+        scale $2
+        ;;
     *)
-        echo "Usage: $0 {up|down|clean|prod}"
+        echo "Usage: $0 {dem|remove|clean|prod|scale}"
         exit 1
         ;;
 esac

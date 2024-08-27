@@ -1,5 +1,6 @@
 version: "3.9"
 
+name: ${APP_CONATINER_NAME}-container
 services:
   express-typescript:
     environment:
@@ -15,5 +16,5 @@ services:
     expose:
       - ${PORT}
     ports:
-      - "3330:${PORT}"
+      - "${PORT}:${PORT}"
     command: npx ts-node ./src/server.ts
