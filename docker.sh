@@ -39,7 +39,7 @@ remove() {
 
 # Define a function to clean up and then start services
 clean() {
-    down
+    remove
     up
 }
 
