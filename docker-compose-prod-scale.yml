@@ -1,6 +1,6 @@
 version: "3.9"
 
-name: ${APP_CONATINER_NAME}-container-scale
+name: ${APP_CONTAINER_NAME}-container-scale
 services:
   node-server:
     environment:

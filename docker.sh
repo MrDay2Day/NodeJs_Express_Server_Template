@@ -64,7 +64,8 @@ case "$1" in
         scale $2
         ;;
     *)
-        echo "Usage: $0 {dem|remove|clean|prod|scale}"
+        echo "Invalid Input: '$1'"
+        echo "Expected Input - 'dev' | 'remove' | 'clean' | 'prod' | 'prod-up' | 'scale <cluster-number>'"
         exit 1
         ;;
 esac

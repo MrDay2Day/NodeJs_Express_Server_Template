@@ -13,6 +13,8 @@ declare global {
       JWT_TOKEN_EXPIRE: string;
       SALT: string;
       DB_TYPE: "mysql" | "postgres" | "mongo";
+      APP_CONTAINER_NAME: string;
+      PM2_CLUSTER_SIZE: string;
       // Socket Management
       APP_SOCKET_NAME: string;
       APP_MAIN_SOCKET_ROOM: string;

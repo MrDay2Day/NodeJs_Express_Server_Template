@@ -1,6 +1,6 @@
 version: "3.9"
 
-name: ${APP_CONATINER_NAME}-container-dev
+name: ${APP_CONTAINER_NAME}-container-dev
 services:
   express-typescript:
     environment:
