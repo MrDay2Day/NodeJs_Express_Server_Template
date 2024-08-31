@@ -16,7 +16,7 @@ Node Version: [**v18.19.0**](https://nodejs.org/en/download/package-manager)
 
 **Short answer:** A Boilerplate NodeJS Express Server Template written in Typescript built for scale!
 
-**The not so short answer:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & ~~`Redis`~~ **->** `KeyDB`. This _template_ is design to operate at scale using ~~`Redis`~~ **->** `KeyDB` and can easily be deployed as a node cluster or/and on separate machines locally or/and globally.
+**The not so short answer:** This is a _work-in-progress_ **boilerplate** `Typescript` written `Express` `REST` Server with integrated `WebSocket` & ~~`Redis`~~ **->** `KeyDB/ValKey`. This _template_ is design to operate at scale using ~~`Redis`~~ **->** `KeyDB/ValKey` and can easily be deployed as a node cluster or/and on separate machines locally or/and globally.
 
 This template has built-in file management using `S3` _(Simple Storage Service)_ protocol and an emailing engine that can send raw `html` emails with **attachments** through `AWS SES` _(Simple Emailing Service)_.
 
@@ -41,19 +41,20 @@ So I've integrated a lot of 3rd party packages and services which I know a lot o
 - MongoDB
 - MySQL
 - PostGreSQL
-- ~~Redis~~ -> KeyDB (Pub/Sub implementation **ONLY**)
+- ~~Redis~~ -> KeyDB/ValKey (Pub/Sub implementation **ONLY**)
 
 ### Technologies
 
 - ExpressJS
+- Kafka
 - Multer
 - Socket.IO
 - Cors
 - Compression
 
-## Why recommend **KeyDB** > Redis🖕🏿
+## Why recommend **KeyDB/ValKey** > Redis🖕🏿
 
-Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub.
+Well, that is because of the whole [license](https://redis.io/legal/licenses/) issue and performance. In multiple test KeDB out performed `Redis` by a significant amount. [**`KeyDB`**](https://docs.keydb.dev/)**`/`**[**`ValKey`**](https://valkey.io/) might not be fully up-to-date with `Redis` 7 however it still has most of the main features of `Redis` to be used as an alternative for cache store, database & Pub/Sub(amongst other key features).
 
 <img src="assets/ops.png" width="700"/>
 
@@ -64,7 +65,7 @@ You are still able to use `Redis` if it and it's license best suit your needs
 1. TypeScript for faster development.
 1. Self generating SQL databases and tables.
 1. WebSocket Enabled via SocketIO.
-1. Scalability through ~~Redis~~ **-> KeyDB** using websocket connections.
+1. Scalability through ~~Redis~~ **-> KeyDB/ValKey** using websocket connections.
 1. Using multiple database concurrently.
 1. File management.
 1. Docker Enabled.
@@ -114,6 +115,10 @@ Text here
 
 Text here
 
+### PM2 Production Deployment
+
+Text here
+
 # **Utility Helper Codes**
 
 | Title                      | Code Example                             | Description                                                                                   |
@@ -149,24 +154,25 @@ These are features & technologies that may or may not be integrated in the futur
 
 ### **Current List**
 
-| Status | Feature                   | Implementation | Notes                                                                                                |
-| ------ | ------------------------- | -------------- | ---------------------------------------------------------------------------------------------------- |
-| ✅     | MySQL                     | 💡             | Industry Standard                                                                                    |
-| ✅     | PostGrSQL                 | 💡             | _[Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47)_ |
-| ✅     | MongoDB                   | 💡             | Recommended DB for Scale                                                                             |
-| ✅     | Socket.IO                 | 💡             | Realtime Communication                                                                               |
-| ✅     | ~~Redis~~ -> KeyDB        | 💡             | Pub/Sub implementation **ONLY**, can be used as DB cache                                             |
-| ✅     | Multer                    | 💡             | File Management through `form-data`                                                                  |
-| ✅     | Backblaze                 | 💡             | S3 Storage - Private & Public                                                                        |
-| ➡️     | Dockerize                 | 🕯️             | For Development and Production Deployment                                                            |
+| Status | Feature                   | Implementation | Notes                                                                                                            |
+| ------ | ------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| ✅     | MySQL                     | 💡             | Industry "go to" for database.                                                                                   |
+| ✅     | PostGrSQL                 | 💡             | _[Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47)_.            |
+| ✅     | MongoDB                   | 💡             | Recommended DB for Scale.                                                                                        |
+| ✅     | Socket.IO                 | 💡             | Realtime Communication between client and server.                                                                |
+| ✅     | ~~Redis~~ -> KeyDB/ValKey | 💡             | Pub/Sub implementation **ONLY** used for cluster communication, can be used as DB cache                          |
+| ✅     | Multer                    | 💡             | File Management for `form-data` uploads.                                                                         |
+| ✅     | Backblaze                 | 💡             | S3 Storage - Private & Public.                                                                                   |
+| ✅     | Dockerize                 | 🕯️             | For Development and Production Deployment.                                                                       |
 | ✅     | Custom Task Queue / CRON  | 🕯️             |
 | ✏️     | SMS                       | 🕯️             |
-| ✅     | AWS-SES                   | 💡             | Emailing Service                                                                                     |
+| ✅     | AWS-SES                   | 💡             | Emailing Service, send emails directly from server or integrate AWS-SES templates easily.                        |
 | ⚠️     | tRCP                      | ❓             |
 | ❌     | GraphQL                   | ❓             |
-| ✅     | TS-NODE                   | 💡             |
+| ✅     | TS-NODE                   | 💡             | Run TypeScript code directly without needing to compile it into JavaScript first for development and deployment. |
 | ➡️     | ServerSide Events Example | 💡             |
-| ❌     | HandlebarsJS Examples     | ❓             | _(For specified routes)_                                                                             |
+| ❌     | HandlebarsJS Examples     | ❓             |                                                                                                                  |
+| ✏️     | Kayka                     | 💡             |                                                                                                                  |
 
 ### **Payments**
 
