@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "outDir": "code",
+    "rootDir": "src",
     "target": "ES6",
     "lib": ["dom", "esnext"],
     "module": "NodeNext",
