@@ -4,7 +4,7 @@ name: ${APP_CONTAINER_NAME}-container-scale
 services:
   node-server:
     environment:
-      - NODE_ENV=dev
+      - NODE_ENV=prod
       - PORT=${PORT}
       - APP_NAME=${APP_NAME}
     build:
