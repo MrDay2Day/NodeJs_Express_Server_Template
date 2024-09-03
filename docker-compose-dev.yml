@@ -4,7 +4,7 @@ name: ${APP_CONTAINER_NAME}-container-dev
 services:
   express-typescript:
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=dev
       - PORT=${PORT}
       - APP_NAME=${APP_NAME}
     build:
