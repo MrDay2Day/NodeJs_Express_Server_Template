@@ -36,7 +36,6 @@ remove() {
     docker-compose -f docker-compose-prod-scale.yml down --volumes --rmi all --remove-orphans
 }
 
-
 # Define a function to clean up and then start services
 clean() {
     remove
@@ -60,12 +59,12 @@ case "$1" in
     prod-up)
         prod-up
         ;;
-    scale)
+    cluster)
         scale $2
         ;;
     *)
         echo "Invalid Input: '$1'"
-        echo "Expected Input - 'dev' | 'remove' | 'clean' | 'prod' | 'prod-up' | 'scale <cluster-number>'"
+        echo "Expected Input - 'dev' | 'remove' | 'clean' | 'prod' | 'prod-up' | 'cluster <cluster-size>'"
         exit 1
         ;;
 esac

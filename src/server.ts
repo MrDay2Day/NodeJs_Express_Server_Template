@@ -13,7 +13,7 @@ function start(): void {
   try {
     console.log(
       text_bright(`
-\n
+\n\n\n\n\n
 **************************************\n
     START `) +
         `${text_bright_red(process.env.APP_NAME || "")}` +

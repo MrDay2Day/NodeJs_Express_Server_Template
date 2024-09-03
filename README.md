@@ -81,7 +81,7 @@ Then edit the `.env` file with the necessary credentials. Input the required inf
 You are able to use multiple databases in this template whether individually or all at once `PostGres`, `MySQL` and `MongoDB`.
 
 You are able to auto create Database and Tables/Collections on the fly when server starts up.
-_NB: Database can be activated of deactivated based on the `*_ACTIVE` (\* = MONGO | PG | MYSQL) variable `y` is for active, leave blank if not active._
+_NB: Database can be activated of deactivated based on the `*_ACTIVE` (\* = MONGO | PG | MYSQL) variable `y` is for active, leave blank if not active eg: `MYSQL_ACTUVE=y`._
 
 ## Development Setup
 
@@ -167,11 +167,11 @@ These are features & technologies that may or may not be integrated in the futur
 | ✅     | Custom Task Queue / CRON  | 🕯️             |
 | ✏️     | SMS                       | 🕯️             |
 | ✅     | AWS-SES                   | 💡             | Emailing Service, send emails directly from server or integrate AWS-SES templates easily.                        |
-| ⚠️     | tRCP                      | ❓             |
-| ❌     | GraphQL                   | ❓             |
+| ⚠️     | tRCP                      |                |
+| ❌     | GraphQL                   |                |
 | ✅     | TS-NODE                   | 💡             | Run TypeScript code directly without needing to compile it into JavaScript first for development and deployment. |
 | ➡️     | ServerSide Events Example | 💡             |
-| ❌     | HandlebarsJS Examples     | ❓             |                                                                                                                  |
+| ❌     | HandlebarsJS Examples     |                |                                                                                                                  |
 | ✏️     | Kayka                     | 💡             |                                                                                                                  |
 
 ### **Payments**
