@@ -70,6 +70,7 @@ class Misc {
             ? { valid: true }
             : {
                 success: {
+                  working: true,
                   production:
                     process.env.NODE_ENV === "production" ? true : false,
                   date,
