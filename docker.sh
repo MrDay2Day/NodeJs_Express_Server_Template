@@ -1,30 +1,31 @@
 #!/bin/bash
 
+source ./.env
 
 # Define a function to bring services up
 prod() {
     echo "Starting Production services clean..."
-    docker-compose -f docker-compose-prod.yml --build
+    docker-compose -f docker-compose-prod.yml --build --no-cache
     docker-compose -f docker-compose-prod.yml up -d
 }
 
 prod-up() {
     echo "Starting Production services..."
-    docker-compose -f docker-compose-prod.yml --build
+    docker-compose -f docker-compose-prod.yml --build --no-cache
     docker-compose -f docker-compose-prod.yml up -d
 }
 
 scale() {
-    x=$1
+    # x=$1
     echo "Starting Production services with scaling..."
-    docker-compose -f docker-compose-prod-scale.yml build
-    docker-compose -f docker-compose-prod-scale.yml up -d --scale node-server=$x
-    echo "Production Container deployed with ${x} node(s)."
+    docker-compose -f docker-compose-prod-scale.yml --build --no-cache
+    docker-compose -f docker-compose-prod-scale.yml up -d --scale node-server=$CLUSTER_SIZE
+    echo "Production Container deployed with $CLUSTER_SIZE node(s)."
 }
 
 dev() {
     echo "Starting Development services..."
-    docker-compose -f docker-compose-dev.yml --build
+    docker-compose -f docker-compose-dev.yml --build --no-cache
     docker-compose -f docker-compose-dev.yml up -d
 }
 
@@ -59,12 +60,13 @@ case "$1" in
     prod-up)
         prod-up
         ;;
-    cluster)
-        scale $2
+    scale)
+        scale
+        # scale $2
         ;;
     *)
         echo "Invalid Input: '$1'"
-        echo "Expected Input - 'dev' | 'remove' | 'clean' | 'prod' | 'prod-up' | 'cluster <cluster-size>'"
+        echo "Expected Input - 'dev' | 'remove' | 'clean' | 'prod' | 'prod-up' | 'scale'"
         exit 1
         ;;
 esac

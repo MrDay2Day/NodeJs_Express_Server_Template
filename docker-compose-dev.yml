@@ -10,6 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        PORT: ${PORT}
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

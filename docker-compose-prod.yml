@@ -10,6 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        PORT: ${PORT}
     volumes:
       - /usr/src/app
     container_name: ${APP_NAME}-Production

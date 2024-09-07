@@ -1,3 +1,5 @@
+ARG NODE_VERSION
+
 FROM ${NODE_VERSION}
 
 WORKDIR /usr/src/app

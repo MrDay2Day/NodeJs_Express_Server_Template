@@ -1,18 +1,5 @@
 code
 node_modules
 
-.dockerignore
 
-docker*.yml
-docker-compose.yml
-docker-compose-dev.yml
-docker-compose-prod.yml
-
-
-Dockerfile
-Dockerfile*
-Dockerfile.dev
-Dockerfile.prod
-
-docker.sh
 

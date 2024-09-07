@@ -10,6 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.scale
+      args:
+        NODE_VERSION: ${NODE_VERSION}
+        PORT: ${PORT}
     volumes:
       - /usr/src/app
     command: npx ts-node ./src/server.ts
@@ -27,3 +30,28 @@ services:
       - ${PORT}:${PORT}
     env_file:
       - .env
+
+  # Only applicable with container images
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   command:
+  #     - "--label-enable"
+  #     - "--interval"
+  #     - "15"
+  #     - "--rolling-restart"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+
+  # CI/CD Pipeline
+  webhook-listener:
+    image: almir/webhook
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./hooks:/etc/webhook
+    environment:
+      - WEBHOOK_URL_PATH=/webhook
+    command: ["/etc/webhook/hooks.json"]
+    depends_on:
+      - node-server
+      - nginx
