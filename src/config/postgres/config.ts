@@ -3,7 +3,7 @@ import {
   checkAndCreatePGDatabase,
   createPGTables,
 } from "../../app/models/database/potsgres/trigger";
-import { text_bright_yellow } from "../../types/utils/serverDataInfo";
+import { text_bright_yellow } from "../../utils/serverDataInfo";
 import { isStringNumber } from "../../app/utils/helpers";
 const { Pool } = pg;
 

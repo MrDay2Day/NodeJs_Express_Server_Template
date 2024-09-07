@@ -1,0 +1,17 @@
+[
+  {
+    "id": "redeploy-service",
+    "execute-command": "/usr/src/app/redeploy.sh",
+    "command-working-directory": "/usr/src/app",
+    "trigger-rule": {
+      "match": {
+        "type": "payload-hash-sha1",
+        "secret": "your-webhook-secret",
+        "parameter": {
+          "source": "header",
+          "name": "X-Hub-Signature"
+        }
+      }
+    }
+  }
+]

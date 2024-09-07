@@ -5,7 +5,7 @@ import {
   pg_connection_data,
   query_pg,
 } from "../../../../config/postgres/config";
-import { text_yellow } from "../../../../types/utils/serverDataInfo";
+import { text_yellow } from "../../../../utils/serverDataInfo";
 
 export async function checkAndCreatePGDatabase(): Promise<boolean> {
   const client = new Client(pg_connection_data);

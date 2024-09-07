@@ -1,5 +1,5 @@
 import { createToken, createSystemToken } from "../../utils/jwt";
-import { io } from "../../../types/utils/socket";
+import { io } from "../../../utils/socket";
 
 import os from "os";
 

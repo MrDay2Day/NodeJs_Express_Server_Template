@@ -4,7 +4,7 @@ import mongoose, { ConnectOptions } from "mongoose";
 import path from "path";
 import { MongoMainListener } from "../../app/models/database/mongo/listener/listeners";
 import { MongoMemoryReplSet } from "mongodb-memory-server";
-import { text_bright_cyan, text_cyan } from "../../types/utils/serverDataInfo";
+import { text_bright_cyan, text_cyan } from "../../utils/serverDataInfo";
 
 export const MONGOOSE_OPTIONS: ConnectOptions = {
   readPreference: mongoose.mongo.ReadPreference.PRIMARY,

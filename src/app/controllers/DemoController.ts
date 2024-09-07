@@ -32,7 +32,7 @@ import { QueryResult } from "mysql2/promise";
 import Demo_User from "../models/database/mongo/schemas/Demo_User";
 
 /**To use socket connection */
-import { getIO } from "../../types/utils/socket";
+import { getIO } from "../../utils/socket";
 /**
  *  Examples use of SocketIO websocket
 ...

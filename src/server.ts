@@ -7,7 +7,7 @@ import { app } from "./middleware/modules";
 import mainRouter from "./app/app";
 import http from "http";
 import DBConfiguration from "./config/db_config";
-import { text_bright, text_bright_red } from "./types/utils/serverDataInfo";
+import { text_bright, text_bright_red } from "./utils/serverDataInfo";
 
 function start(): void {
   try {
