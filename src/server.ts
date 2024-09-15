@@ -1,4 +1,12 @@
-process.on("APP STACK WARNING", (e) => console.warn(e.stack));
+process
+  .on("warning", (e) => console.warn(e.stack))
+  .on("unhandledRejection", (reason, p) =>
+    console.log(reason, `Unhandled Rejection at Promise - ${p}`)
+  )
+  .on("uncaughtException", (exception_err) =>
+    console.log(exception_err, "Uncaught Exception Error")
+  )
+  .on("APP STACK WARNING", (e) => console.warn(e.stack));
 
 import dotenv from "dotenv";
 dotenv.config();

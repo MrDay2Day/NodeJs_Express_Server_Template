@@ -13,6 +13,7 @@ services:
       args:
         NODE_VERSION: ${NODE_VERSION}
         PORT: ${PORT}
+        APP_NAME: ${APP_NAME}
     volumes:
       - /usr/src/app
     command: npx ts-node ./src/server.ts
@@ -23,7 +24,7 @@ services:
       context: .
       dockerfile: Dockerfile.nginx
     volumes:
-      - ./conf.d:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
     depends_on:
       - node-server
     ports:
@@ -43,15 +44,24 @@ services:
   #     - /var/run/docker.sock:/var/run/docker.sock
 
   # CI/CD Pipeline
-  webhook-listener:
-    image: almir/webhook
-    ports:
-      - "9000:9000"
-    volumes:
-      - ./hooks:/etc/webhook
-    environment:
-      - WEBHOOK_URL_PATH=/webhook
-    command: ["/etc/webhook/hooks.json"]
-    depends_on:
-      - node-server
-      - nginx
+  # webhook-listener:
+  #   image: almir/webhook
+  #   environment:
+  #     - WEBHOOK_URL_PATH=/webhook
+  #   ports:
+  #     - "9000:9000"
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - ./hooks:/etc/webhook
+  #   command:
+  #     [
+  #       "-hooks",
+  #       "/etc/webhook/hooks.json",
+  #       "-verbose",
+  #       "-hotreload",
+  #       "-urlprefix",
+  #       "/webhook",
+  #     ]
+  #   depends_on:
+  #     - node-server
+  #     - nginx

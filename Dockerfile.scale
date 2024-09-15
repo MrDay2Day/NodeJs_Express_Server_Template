@@ -4,16 +4,15 @@ FROM ${NODE_VERSION}
 
 WORKDIR /usr/src/app
 
-COPY docker.sh /usr/src/app/docker.sh
+# COPY redeploy.sh /usr/src/app/redeploy.sh
 
-RUN chmod +x /usr/src/app/docker.sh
+# RUN chmod +x /usr/src/app/redeploy.sh
 
 COPY package*.json ./
 
 RUN npm ci
 
 COPY . .
-
 
 RUN npm install -g ts-node
 

@@ -5,11 +5,11 @@
     "command-working-directory": "/usr/src/app",
     "trigger-rule": {
       "match": {
-        "type": "payload-hash-sha1",
-        "secret": "your-webhook-secret",
+        "type": "value",
+        "value": "push",
         "parameter": {
-          "source": "header",
-          "name": "X-Hub-Signature"
+          "source": "payload",
+          "name": "ref"
         }
       }
     }

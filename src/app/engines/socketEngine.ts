@@ -23,7 +23,7 @@ import { v4 as uuidv4 } from "uuid";
   
 
  */
-export default class SocketEngine {
+class SocketEngine {
   /**
    * Socket Listening Procedure
    *
@@ -152,3 +152,5 @@ export default class SocketEngine {
     }
   }
 }
+
+export default SocketEngine;

@@ -10,7 +10,7 @@
 # [Day2Day Group Technologies](https://day2dayja.com)
 
 Created by: [**MrDay2Day**](https://github.com/MrDay2Day)  
-Node Version: [**v18.19.0**](https://nodejs.org/en/download/package-manager)
+Node Version: [**v22.6**](https://nodejs.org/en/download/package-manager)
 
 ## What is **Repo** this?
 
@@ -70,11 +70,13 @@ You are still able to use `Redis` if it and it's license best suit your needs
 1. File management.
 1. Docker Enabled.
 
-# Setup
+# Development Environment Setup
 
 Copy and paste `.env.template` to `.env`
 
-    cp .env.template .env
+```bash
+cp .env.template .env
+```
 
 Then edit the `.env` file with the necessary credentials. Input the required information for the services/features/libraries which will be used.
 
@@ -83,41 +85,135 @@ You are able to use multiple databases in this template whether individually or 
 You are able to auto create Database and Tables/Collections on the fly when server starts up.
 _NB: Database can be activated of deactivated based on the `*_ACTIVE` (\* = MONGO | PG | MYSQL) variable `y` is for active, leave blank if not active eg: `MYSQL_ACTUVE=y`._
 
-## Development Setup
+After Environment variables are setup in the .env file you need to do a `ci`_(Continuous Integration)_ installation of the `node_modules`:
+
+```bash
+npm ci
+```
 
 ### Local Development
 
-Development done on the system it will be deployed on.
+To start **server** in development mode and compile to vanilla Javascript then run with nodemon use:
 
-To start **server** in development mode:
+```bash
+npm run dev
+```
 
-    npm i
+To run **Typescript** using `ts-node`:
 
-Then
+```bash
+npm run ts-dev
+```
 
-    npm run dev
+### Using Docker for development.
 
-This will start the typescript compiler and also Nodemon
+This template allows you to use Docker for both **development** and **production**. As a developer you are free to make any changes you see fit to customize the development environment. **If you do not know what you are doing do not edit any changes**.
 
-### Docker Development
+To start development in Docker you can use the shell script, this starts the development server in docker using user `Node v22.6` with `ts-node` executing **Typescript**.
 
-Text here
+```bash
+./app.sh docker-dev
+```
+
+To user `nodemon` while compiling **Typescript** to **Javascript**
+
+```bash
+./app.sh docker-dev-node
+```
 
 ## Production Setup
 
 ### Local Production Deployment
 
-Deploying on the system it was developed on.
+Deploying on server the simple way.
 
-Text here
+```bash
+npm run start
+```
+
+This does a `Typescript` compilation then executes the `Javascript` code via `'code/server.js'`
+
+If you have any issues as it relates to type errors can also do a manual compilation by using:
+
+```bash
+npm run tsc
+```
+
+then:
+
+```bash
+npm run start-server
+```
+
+The `npm run start-server` command runs the `'code/server.js'` directly
 
 ### Docker Production Deployment
 
-Text here
+To do a production deployment using Docker, use the `app.sh` script.
+A simple deployment is as follows:
+
+```bash
+./app.sh docker-prod
+```
+
+This will deploy a single container of the server.
+
+You are able to deploy as a cluster for availability and load balance using `nginx`. The environment variable `CLUSTER_SIZE` is use to determine the cluster's size.
+To Deploy use the following script:
+
+```bash
+./app.sh docker-cluster
+```
 
 ### PM2 Production Deployment
 
-Text here
+To deploy using PM2 is simple just use the following script:
+
+```bash
+./app.sh pm2-deploy
+```
+
+This will deploy a PM2 cluster of the server.
+To restart the cluster simple use:
+
+```bash
+./app.sh pm2-restart
+```
+
+To stop the cluster you just need to run
+
+```bash
+./app.sh pm2-stop
+```
+
+## Changing Node Version
+
+To change Node version ensure your change the version in `package.json`:
+
+```json
+{
+  "engines": {
+    "node": "22.6" << Change here
+  },
+  ...
+}
+```
+
+..and also the `Node` version in the `docker-compose-*.yml` files are controller by the `.env` file:
+
+```.env
+PORT=3330
+```
+
+## Adjusting Cluster Size
+
+To adjust cluster size for deployment using Docker or PM2 edit `.env` file
+
+```env
+CLUSTER_SIZE=5
+```
+
+This will deploy a cluster with 5 nodes.
 
 # **Utility Helper Codes**
 

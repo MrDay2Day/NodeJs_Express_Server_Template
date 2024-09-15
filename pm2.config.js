@@ -7,7 +7,7 @@ module.exports = {
       script: "code/server.js",
       exec_mode: "cluster",
       watch: false,
-      instances: process.env.PM2_CLUSTER_SIZE,
+      instances: process.env.CLUSTER_SIZE,
     },
   ],
 };
