@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 
+const expHrs = process.env.JWT_EXP_HRS || 3;
+
 // Provide types for verified token
 type VerifyType = {
   [key: string]: any | unknown;
@@ -22,19 +24,23 @@ type VerifyType = {
  *     console.error(error);
  *   });
  */
-export const createToken = async (data: { [key: string]: any }) => {
+export const createToken = async (data: {
+  [key: string]: any;
+}): Promise<{ token: string; expires: string }> => {
   try {
-    // console.log(parseInt(process.env.JWT_TOKEN_EXPIRE));
-    const hrs = 3600000 * parseInt(process.env.JWT_TOKEN_EXPIRE || "");
     // console.log({ hrs });
+    const expDate = new Date();
 
-    const newHrs = String(Date.now() + hrs);
-    // console.log({ newHrs, JWT_TOKEN_EXPIRE: process.env.JWT_TOKEN_EXPIRE });
+    expDate.setHours(expDate.getHours() + +expHrs);
 
-    const token = await jwt.sign({ data }, process.env.SALT || "", {
-      expiresIn: `${process.env.JWT_TOKEN_EXPIRE || ""}h`,
-    });
-    return { token, expires: String(newHrs) };
+    const token = await jwt.sign(
+      { data },
+      process.env.SALT || "biw8cb8ob2ew862fva4uc78o236fce2v5kd9bcg1as2tc",
+      {
+        expiresIn: `${expHrs}h`,
+      }
+    );
+    return { token, expires: expDate.toISOString() };
   } catch (err) {
     throw err;
   }
