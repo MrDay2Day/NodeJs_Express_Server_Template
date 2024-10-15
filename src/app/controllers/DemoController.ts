@@ -8,8 +8,6 @@ import {
   UserType,
 } from "../models/database/types/Demo_Types";
 
-import { faker } from "@faker-js/faker";
-
 /**
  *
  *  To access database functionality
@@ -48,29 +46,9 @@ import FileManagement from "../apis/FileManagement";
 // Sample Upload Data
 import { demo_image_file, excel_file } from "./file_info";
 import { DemoClassSQL } from "../models/global/demo_mysql";
-
-function generate_user() {
-  const demo_user = {
-    _id: faker.string.uuid(),
-    userId: faker.string.uuid(),
-    username: faker.internet.userName(),
-    first_name: faker.person.firstName(),
-    last_name: faker.person.lastName(),
-    full_name: faker.person.fullName(),
-    name: faker.person.fullName(),
-    phone: parseInt(`1876${faker.string.numeric("#######")}`),
-    email: faker.internet.email(),
-    avatar: faker.image.avatar(),
-    password: faker.internet.password(),
-    dob: faker.date.birthdate(),
-    registeredAt: faker.date.past(),
-    userType: UserType.User,
-    age: 0,
-  };
-  const user_dob_year = demo_user.dob.getFullYear();
-  demo_user.age = new Date().getFullYear() - user_dob_year;
-  return demo_user;
-}
+import { generate_user } from "./util";
+import { faker } from "@faker-js/faker";
+import catchError from "../utils/errorHandle";
 
 class DemoController {
   /**Demo handling post request */
@@ -225,7 +203,7 @@ class DemoController {
       // This is the information that needed to fetch the file
 
       /**
-       Please take note of the required fields from "demo_file_info" which is the dat your get from uploading a file.
+       Please take note of the required fields from "demo_file_info" which is the date you get from uploading a file.
        
        NB: For images ONLY you get "uploadThumbnailData" AND "uploadRegularData" while every other file type ONLY has "uploadRegularData"
        *  */
@@ -396,31 +374,34 @@ class DemoController {
       console.time("create_user_mongo");
 
       /**Using the predefined Schema Static function */
-      const demo_static_result = await Demo_User.createDemo({
-        name: demo_user.full_name,
-        age: demo_user.age,
-        dob: demo_user.dob,
-        userType: demo_user.userType,
-      });
+      const [mongoError, demo_static_result] = await catchError(
+        Demo_User.createDemo({
+          name: demo_user.full_name,
+          age: demo_user.age,
+          dob: demo_user.dob,
+          userType: demo_user.userType,
+        })
+      );
+
+      if (mongoError) {
+        // Handle error as you see fit ot throw error
+        throw mongoError;
+      }
       console.timeEnd("create_user_mongo");
 
-      /**Create a 'Demo' document with the user info from 'demo_user' 
-       * 
-          const demo_user = generate_user();
-          
-          const data = new Demo_User({
-            _id: demo_user.userId,
-            name: demo_user.full_name,
-            age: demo_user.age,
-            dob: demo_user.dob,
-            userType: demo_user.userType,
-          });
-          
-          await data.save();
-      */
+      /**Create a 'Demo' document with the user info from 'demo_user'
+       *
+       *  const data = new Demo_User({
+       *    _id: demo_user.userId,
+       *    name: demo_user.full_name,
+       *    age: demo_user.age,
+       *    dob: demo_user.dob,
+       *    userType: demo_user.userType,
+       *  });
+       */
 
       /**We use the method function the change the ago with ease without using 'updateOne' etc. ensure to use the 'await' flag. */
-      await demo_static_result.updateDOB(faker.date.birthdate());
+      await demo_static_result?.updateDOB(faker.date.birthdate());
 
       return res.status(200).json({ demo_static_result, valid: true });
     } catch (error: ErrorType) {

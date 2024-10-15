@@ -59,8 +59,10 @@ export class DemoClass extends Document {
     this.userType = userType;
   }
 
-  static fromDocument(doc: DemoSchemaType): DemoClass {
-    return new DemoClass(doc.name, doc.age, doc.dob, doc.userType);
+  static async fromDocument(doc: DemoSchemaType) {
+    const demoUser = new DemoClass(doc.name, doc.age, doc.dob, doc.userType);
+    await demoUser.save();
+    return demoUser;
   }
 
   async updateAge(new_age: number) {
@@ -68,9 +70,3 @@ export class DemoClass extends Document {
     this.save();
   }
 }
-
-/**
-
-
-
- */
