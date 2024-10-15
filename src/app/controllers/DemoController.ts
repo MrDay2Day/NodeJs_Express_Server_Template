@@ -48,7 +48,7 @@ import { demo_image_file, excel_file } from "./file_info";
 import { DemoClassSQL } from "../models/global/demo_mysql";
 import { generate_user } from "./util";
 import { faker } from "@faker-js/faker";
-import catchError from "../utils/errorHandle";
+import { catchErrorPromise } from "../utils/errorHandle";
 
 class DemoController {
   /**Demo handling post request */
@@ -374,7 +374,7 @@ class DemoController {
       console.time("create_user_mongo");
 
       /**Using the predefined Schema Static function */
-      const [mongoError, demo_static_result] = await catchError(
+      const [mongoError, demo_static_result] = await catchErrorPromise(
         Demo_User.createDemo({
           name: demo_user.full_name,
           age: demo_user.age,

@@ -20,10 +20,10 @@ const transporter = nodemailer.createTransport({
 });
 
 export type AttachmentType = {
-  buffer?: Buffer;
-  mimetype?: string;
-  extension?: string;
-  fileName?: string;
+  buffer: Buffer;
+  mimetype: string;
+  extension: string;
+  fileName: string;
 };
 
 export type AWSEmailType = {
@@ -35,7 +35,7 @@ export type AWSEmailType = {
   subject: string;
   text?: string;
   data: Record<string, any>;
-  emailAttachments: AttachmentType[];
+  emailAttachments?: AttachmentType[];
   template: string;
 };
 
@@ -124,7 +124,7 @@ class EmailEngine {
         }
 
         const attachments: Array<any | { [key: string]: any }> = [];
-        if (emailAttachments.length) {
+        if (emailAttachments?.length) {
           emailAttachments.forEach((attachment) => {
             attachments.push({
               content: attachment.buffer,
@@ -171,7 +171,7 @@ class EmailEngine {
 
         transporter.sendMail(params, (err: any, info: any) => {
           if (err) {
-            resolve({ valid: false, err });
+            reject({ valid: false, data, err });
           } else {
             resolve({
               valid: true,
@@ -197,7 +197,7 @@ class EmailEngine {
           }
         });
       } catch (err) {
-        resolve({ valid: false, data, err });
+        reject({ valid: false, data, err });
       }
     });
   };

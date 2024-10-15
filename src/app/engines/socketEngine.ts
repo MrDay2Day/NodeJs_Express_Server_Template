@@ -4,6 +4,9 @@ import http from "http";
 
 import { verifyToken } from "../utils/jwt";
 import { v4 as uuidv4 } from "uuid";
+import { catchError } from "../utils/errorHandle";
+
+let count = 0;
 
 /**
   Recommendation 
@@ -37,7 +40,7 @@ class SocketEngine {
     request: http.IncomingMessage,
     serverInstanceId: string
   ) {
-    console.log(request.headers);
+    console.log({ headers: request.headers });
     socket.onAny(async (event: string) => {
       console.log({ event }, socket.data);
     });
@@ -45,17 +48,28 @@ class SocketEngine {
     /**Examples of general socket listeners */
     socket.on("ping", async (data, callback) => {
       try {
-        const io = getIO();
+        const [io_error, io] = catchError(getIO, []);
+        if (io_error) {
+          if (callback) {
+            return callback({ valid: false, msg: "Connection Issue" });
+          }
+        }
         /**This function should be used to validate socket connection that it is associated with a valid user. */
         await this.validate_socket(socket);
         console.log("Received PING data:", {
           data,
         });
-        const response = { valid: true, serverInstanceId, time: new Date() };
+        count++;
+        const response = {
+          valid: true,
+          serverInstanceId,
+          count,
+          time: new Date(),
+        };
         /**Example -> Sending a socket message, this message is sent to all who are listening to the "all" event.
          * Also this message, if redis/keydb is enabled is distributed to all server instances that are connected to the Pub/Sub connection.
          */
-        io.to(data.to).emit("hello", data);
+        io?.to(data.to).emit("hello", data);
         /**Callback used to send data back to the client if applicable. */
         if (callback) callback(response);
       } catch (err) {
@@ -70,9 +84,11 @@ class SocketEngine {
         console.log("Received Demo data:", {
           data,
         });
+
+        count++;
         /**Callback used to send data back to the client if applicable. */
         if (callback)
-          callback({ valid: true, serverInstanceId, time: new Date() });
+          callback({ valid: true, serverInstanceId, count, time: new Date() });
       } catch (err) {
         console.log({ err });
       }
@@ -93,10 +109,13 @@ class SocketEngine {
     try {
       console.log({ socketRoom, socketId });
       /** Establishing SocketIO Server Access */
-      const io = getIO();
+      const [io_error, io] = catchError(getIO, []);
+      if (io_error) {
+        throw new Error("No Socket socket connection.");
+      }
 
       /** getting the socket connection instance for the ID */
-      const socket = io.sockets.sockets.get(socketId);
+      const socket = io?.sockets.sockets.get(socketId);
 
       /** Adding socket id to the user's private socket room */
       if (socketRoom) {
@@ -104,7 +123,7 @@ class SocketEngine {
       }
 
       /** Getting a list of the main socket room */
-      const main_socket_room = io.sockets.adapter.rooms.get(
+      const main_socket_room = io?.sockets.adapter.rooms.get(
         process.env.APP_MAIN_SOCKET_ROOM || "main_socket_room"
       );
 
@@ -121,7 +140,7 @@ class SocketEngine {
       }
 
       console.log(`${socketRoom} IDs`, {
-        ids: io.sockets.adapter.rooms.get(socketRoom),
+        ids: io?.sockets.adapter.rooms.get(socketRoom),
       });
       return true;
     } catch (err) {
@@ -144,6 +163,8 @@ class SocketEngine {
       if (!socket_id) {
         throw new Error("Not Authenticated.");
       }
+
+      // Socket Validation Here
 
       return true;
     } catch (error) {
