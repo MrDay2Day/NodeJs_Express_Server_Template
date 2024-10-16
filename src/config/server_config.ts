@@ -10,8 +10,15 @@ import {
   text_bright_green,
   text_bright_red,
 } from "../utils/serverDataInfo";
+import { generateString } from "../app/utils/helpers";
 
-export const serverInstanceId = String(uuidv4()).toUpperCase();
+const g = generateString;
+
+export const serverInstanceId = `${g(8, true)}-${g(5, true)}.${g(5, true)}_${g(
+  6,
+  true
+)}-${g(12, true)}`;
+
 export function start_server(
   server: http.Server<typeof http.IncomingMessage, typeof http.ServerResponse>
 ) {

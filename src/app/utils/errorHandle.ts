@@ -5,13 +5,13 @@
  * @template T - The type of the promise result.
  *
  * @param {Promise<T>} promise - The promise to handle errors for.
- * @returns {Promise<[undefined, T] | [Error | unknown]>} A promise that resolves to a tuple:
+ * @returns {Promise<[undefined, T] | [Error | unknown | undefined]>} A promise that resolves to a tuple:
  *  - On success: `[undefined, T]` where `T` is the resolved value of the passed promise.
  *  - On error: `[Error | unknown]` where the first element is the caught error.
  */
 export async function catchErrorPromise<T>(
   promise: Promise<T>
-): Promise<[undefined, T] | [Error | unknown]> {
+): Promise<[undefined, T] | [Error | unknown | undefined]> {
   try {
     const data = await promise;
     return [undefined, data] as [undefined, T];
@@ -28,14 +28,14 @@ export async function catchErrorPromise<T>(
  *
  * @param {(x: any) => any} func - The function to handle errors for.
  * @param {any[]} func_var - The arguments to pass to the function.
- * @returns {[undefined, T] | [Error | unknown]} A tuple:
+ * @returns {[undefined, T] | [Error | unknown | undefined]} A tuple:
  *  - On success: `[undefined, T]` where `T` is the result of the function.
  *  - On error: `[Error | unknown]` where the first element is the caught error.
  */
 export function catchError<T>(
   func: (...args: any[]) => T,
   func_var: any[]
-): [undefined, T] | [Error | unknown] {
+): [undefined, T] | [Error | unknown | undefined] {
   try {
     const data = func(...func_var);
     return [undefined, data] as [undefined, T];

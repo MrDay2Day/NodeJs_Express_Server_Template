@@ -34,14 +34,15 @@ export function getRandomNumber(min: number, max: number): number {
  * @returns {string} The generated random string.
  * @throws {Error} If the length is less than or equal to 0 or greater than 200.
  */
-export function generateString(length: number): string {
+export function generateString(length: number, letters_only?: Boolean): string {
   // Check for invalid length
   if (length <= 0 || length > 200) {
     throw new Error("Length must be between 1 and 200 characters");
   }
 
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&!";
+  const characters = letters_only
+    ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&!";
   let randomString = "";
 
   for (let i = 0; i < length; i++) {
@@ -59,9 +60,9 @@ export function generateString(length: number): string {
     !uppercaseRegex.test(randomString) ||
     !string_regex_num.test(randomString) ||
     !lowercaseRegex.test(randomString) ||
-    !string_regex_special.test(randomString)
+    (!letters_only && !string_regex_special.test(randomString))
   ) {
-    return generateString(length);
+    return generateString(length, letters_only);
   }
 
   return randomString;
