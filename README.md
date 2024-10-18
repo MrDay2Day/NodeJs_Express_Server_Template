@@ -20,36 +20,36 @@ Node Version: [**v22.6**](https://nodejs.org/en/download/package-manager)
 
 This template has built-in file management using `S3` _(Simple Storage Service)_ protocol and an emailing engine that can send raw `html` emails with **attachments** through `AWS SES` _(Simple Emailing Service)_.
 
-**NB:**_There is also a unique authorization method which I personally use which tags all machines with a unique id stored in a cookie that make a request to server so you are able to have some sense of the devices used by your users and is also very helpful when it comes to security and usage patterns for users._
+<!-- **NB:**_There is also a unique authorization method which I personally use which tags all machines with a unique id stored in a cookie that make a request to server so you are able to have some sense of the devices used by your users and is also very helpful when it comes to security and usage patterns for users._ -->
 
 ### **These are all custom solutions and are at no point in time a RULE that must be followed, you are welcome to make changes as you see fit.**
 
 ## Why did I build **Repo**?
 
-Simple I am a **developer** who creates a lot of _servers_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I use most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
+Simple I am a **developer** who creates a lot of _servers & micro-services_ and I often find myself _copying_ and _pasting_ from previous projects the same code. So I said to myself why not just create a _general template_ that has all the things I use most in my favorite worse language `Javascript` with a bit of seasoning being `Typescript`.
 
-So I've integrated a lot of 3rd party packages and services which I know a lot of people will love and also so honorary mentions from my favorites' list.
+So I've integrated some 3rd party packages and services which I know a lot of people will love and also so honorary mentions from my favorites' list.
 
 ### Services
 
-- Backblaze
-- AWS SES
-- ClickSend
+- Backblaze 🏆
+- AWS SES 🏆
+- ClickSend (Maybe)
 
 ### Databases
 
-- MongoDB
-- MySQL
-- PostGreSQL
+- MongoDB 🏆🏆
+- MySQL 🏆
+- PostGreSQL 🏆
 - ~~Redis~~ -> KeyDB/ValKey (Pub/Sub implementation **ONLY**)
 
-### Technologies
+### Other Packages
 
-- ExpressJS
-- Kafka
-- Multer
-- Socket.IO
-- Cors
+- ExpressJS 🏆
+- Kafka 💨
+- Multer 🏆
+- Socket.IO 🏆
+- Cors ⚠️
 - Compression
 
 ## Why recommend **KeyDB/ValKey** > Redis🖕🏿
@@ -58,7 +58,7 @@ Well, that is because of the whole [license](https://redis.io/legal/licenses/) i
 
 <img src="assets/ops.png" width="700"/>
 
-You are still able to use `Redis` if it and it's license best suit your needs
+You are still able to use `Redis` if it and it's license doesn't affect your needs.
 
 # **Key Features**
 
@@ -250,40 +250,43 @@ These are features & technologies that may or may not be integrated in the futur
 
 ### **Current List**
 
-| Status | Feature                   | Implementation | Notes                                                                                                            |
-| ------ | ------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
-| ✅     | MySQL                     | 💡             | Industry "go to" for database.                                                                                   |
-| ✅     | PostGrSQL                 | 💡             | _[Large community of extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47)_.            |
-| ✅     | MongoDB                   | 💡             | Recommended DB for Scale.                                                                                        |
-| ✅     | Socket.IO                 | 💡             | Realtime Communication between client and server.                                                                |
-| ✅     | ~~Redis~~ -> KeyDB/ValKey | 💡             | Pub/Sub implementation **ONLY** used for cluster communication, can be used as DB cache                          |
-| ✅     | Multer                    | 💡             | File Management for `form-data` uploads.                                                                         |
-| ✅     | Backblaze                 | 💡             | S3 Storage - Private & Public.                                                                                   |
-| ✅     | Dockerize                 | 🕯️             | For Development and Production Deployment.                                                                       |
-| ✅     | Custom Task Queue / CRON  | 🕯️             |
-| ✏️     | SMS                       | 🕯️             |
-| ✅     | AWS-SES                   | 💡             | Emailing Service, send emails directly from server or integrate AWS-SES templates easily.                        |
-| ⚠️     | tRCP                      |                |
-| ❌     | GraphQL                   |                |
-| ✅     | TS-NODE                   | 💡             | Run TypeScript code directly without needing to compile it into JavaScript first for development and deployment. |
-| ➡️     | ServerSide Events Example | 💡             |
-| ❌     | HandlebarsJS Examples     |                |                                                                                                                  |
-| ✏️     | Kayka                     | 💡             |                                                                                                                  |
+| Status | Feature                                       | Implementation | Notes                                                                                                                                                |
+| ------ | --------------------------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ✅     | MySQL                                         | 💡             | Industry "go to" for database.                                                                                                                       |
+| ✅     | PostGrSQL                                     | 💡             | Large community of [extension](https://gist.github.com/joelonsql/e5aa27f8cc9bd22b8999b7de8aee9d47).                                                  |
+| ✅     | MongoDB                                       | 💡             | Recommended DB for Scale and large amount of data.                                                                                                   |
+| ✅     | Socket.IO                                     | 💡             | Realtime Communication between client and server.                                                                                                    |
+| ✅     | ~~Redis~~ -> KeyDB/ValKey                     | 💡             | Pub/Sub implementation **ONLY** used for cluster communication, can be used as DB cache with your own implementation.                                |
+| ✅     | Multer                                        | 💡             | File Management for `form-data` uploads.                                                                                                             |
+| ✅     | Backblaze                                     | 💡             | S3 Storage - Private & Public.                                                                                                                       |
+| ✅     | Dockerize                                     | 🕯️             | For Development and Production Deployment.                                                                                                           |
+| ✅     | Custom Task Queue / CRON / Email with AWS-SES | 🕯️             | Implemented however I created a [mico-service repo](https://github.com/MrDay2Day/AWS-Email-Queue_and_Task-Queue_Server) for when deploying at scale. |
+| ✅     | ts-node/ts-node-dev                           | 💡             | TypeScript execution engine._(Strict type requirements)_                                                                                             |
+| ➡️     | ServerSide Events with Example                | 💡             | To be distributed through data stream for deployment at scale.                                                                                       |
+| ➡️     | Kafka                                         | 💡             | Data Streaming.                                                                                                                                      |
+| ✏️     | SMS                                           | 🕯️             | Unable to find a suitable provider.                                                                                                                  |
+| ❌     | tRCP                                          |                |
+| ❌     | GraphQL                                       |                |
+| ❌     | HandlebarsJS with Examples                    |                |                                                                                                                                                      |
 
-### **Payments**
+### **Payments** 💭
 
-| Status | Feature | Implementation | Notes |
+I am under the mindset that payments management should be implemented on a per need basis based on your application.
+
+<!-- | Status | Feature | Implementation | Notes |
 | ------ | ------- | -------------- | ----- |
-| ✏️     | Paddle  | ❓             | -     |
-| ✏️     | Stripe  | ❓             | -     |
-| ✏️     | Paypal  | ❓             | -     |
+| ✏️     | Paddle  | 💡             | -     |
+| ✏️     | Stripe  | 💡             | -     |
+| ✏️     | Paypal  | 💡             | -     | -->
 
-### **Authentication**
+### **Authentication** ⚠️
 
-| Status | Feature        | Implementation | Notes                                 |
+Plans to implemented as a micro-service however I would recommend using [Logto](https://github.com/logto-io/logto).
+
+<!-- | Status | Feature        | Implementation | Notes                                 |
 | ------ | -------------- | -------------- | ------------------------------------- |
-| ✏️     | Google Auth    | ❓             | _With Recommendations and Procedures_ |
-| ✏️     | Microsoft Auth | ❓             | _With Recommendations and Procedures_ |
-| ✏️     | Twitter Auth   | ❓             | _With Recommendations and Procedures_ |
-| ✏️     | LinkedIn Auth  | ❓             | _With Recommendations and Procedures_ |
-| ✏️     | Facebook Auth  | ❓             | _With Recommendations and Procedures_ |
+| ✏️     | Google Auth    | 💡             | _With Recommendations and Procedures_ |
+| ✏️     | Microsoft Auth | 💡             | _With Recommendations and Procedures_ |
+| ✏️     | Twitter Auth   | 💡             | _With Recommendations and Procedures_ |
+| ✏️     | LinkedIn Auth  | 💡             | _With Recommendations and Procedures_ |
+| ✏️     | Facebook Auth  | 💡             | _With Recommendations and Procedures_ | -->
