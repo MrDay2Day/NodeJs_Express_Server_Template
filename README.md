@@ -64,8 +64,7 @@ You are still able to use `Redis` if it and it's license doesn't affect your nee
 
 1. TypeScript for faster development.
 1. Self generating SQL databases and tables.
-1. WebSocket Enabled via SocketIO.
-1. Scalability through ~~Redis~~ **-> KeyDB/ValKey** using websocket connections.
+1. WebSocket Enabled via SocketIO which also enables scalability through ~~Redis~~ **-> KeyDB/ValKey** using websocket connections.
 1. Using multiple database concurrently.
 1. File management.
 1. Docker Enabled.

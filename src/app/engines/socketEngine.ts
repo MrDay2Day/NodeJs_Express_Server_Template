@@ -4,7 +4,7 @@ import http from "http";
 
 import { verifyToken } from "../utils/jwt";
 import { v4 as uuidv4 } from "uuid";
-import { catchError } from "../utils/errorHandle";
+import { catchError } from "../utils/catchError";
 
 let count = 0;
 

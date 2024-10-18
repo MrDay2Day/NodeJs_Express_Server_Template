@@ -48,7 +48,7 @@ import { demo_image_file, excel_file } from "./file_info";
 import { DemoClassSQL } from "../models/global/demo_mysql";
 import { generate_user } from "./util";
 import { faker } from "@faker-js/faker";
-import { catchErrorPromise } from "../utils/errorHandle";
+import { catchErrorPromise } from "../utils/catchError";
 
 class DemoController {
   /**Demo handling post request */
