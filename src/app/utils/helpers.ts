@@ -28,11 +28,20 @@ export function getRandomNumber(min: number, max: number): number {
 }
 
 /**
- * Generates a random string of the specified length containing at least one uppercase letter, one lowercase letter, one number, and one special character.
+ * Generates a random string of a specified length with the option to include only letters or a broader character set.
  *
- * @param {number} length - The desired length of the generated string.
- * @returns {string} The generated random string.
- * @throws {Error} If the length is less than or equal to 0 or greater than 200.
+ * @param {number} length - The length of the string to generate. Must be between 1 and 200.
+ * @param {boolean} [letters_only=false] - If `true`, the string will only contain letters and numbers. If `false` (default), special characters will be included.
+ * @returns {string} - A random string that satisfies the specified conditions.
+ * @throws {Error} - If the length is not between 1 and 200.
+ *
+ * @example
+ * // Generate a random string of length 10 with special characters
+ * const randomString = generateString(10);
+ *
+ * @example
+ * // Generate a random string of length 10 with only letters and numbers
+ * const randomString = generateString(10, true);
  */
 export function generateString(length: number, letters_only?: Boolean): string {
   // Check for invalid length
